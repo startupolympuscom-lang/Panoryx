@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { FileWarning, LayoutGrid, Sheet, Clock } from "lucide-react";
 
 const problems = [
@@ -33,23 +34,27 @@ export function ProblemsSection() {
   return (
     <section className="py-20 sm:py-28">
       <Container>
-        <SectionHeading
-          eyebrow="Ce que Panoryx remplace"
-          title="Vos opérations méritent mieux qu'un patchwork d'outils."
-          description="Panoryx remplace les processus fragmentés par une plateforme unique, connectée et à jour en permanence."
-        />
+        <FadeIn>
+          <SectionHeading
+            eyebrow="Ce que Panoryx remplace"
+            title="Vos opérations méritent mieux qu'un patchwork d'outils."
+            description="Panoryx remplace les processus fragmentés par une plateforme unique, connectée et à jour en permanence."
+          />
+        </FadeIn>
 
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <StaggerGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {problems.map((p) => (
-            <div key={p.title} className="rounded-lg border border-navy-100 bg-white p-6">
-              <div className="flex h-11 w-11 items-center justify-center rounded-md bg-action-coral/10 text-action-coral">
-                <p.icon size={20} strokeWidth={2} aria-hidden="true" />
+            <StaggerItem key={p.title}>
+              <div className="h-full rounded-lg border border-navy-100 bg-white p-6 transition-shadow hover:shadow-card">
+                <div className="flex h-11 w-11 items-center justify-center rounded-md bg-action-coral/10 text-action-coral">
+                  <p.icon size={20} strokeWidth={2} aria-hidden="true" />
+                </div>
+                <h3 className="mt-5 text-base font-semibold text-navy">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-navy-500">{p.description}</p>
               </div>
-              <h3 className="mt-5 text-base font-semibold text-navy">{p.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-navy-500">{p.description}</p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </Container>
     </section>
   );

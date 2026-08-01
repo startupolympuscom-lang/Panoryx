@@ -3,6 +3,7 @@ import { Mail, MapPin } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { ContactForm } from "@/components/marketing/contact-form";
+import { FadeIn } from "@/components/motion/reveal";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -22,7 +23,7 @@ export default async function ContactPage({
     <section className="py-16 sm:py-24">
       <Container>
         <div className="grid grid-cols-1 gap-14 lg:grid-cols-[1fr_1.3fr]">
-          <div>
+          <FadeIn>
             <SectionHeading
               eyebrow={isDemo ? "Demande de démo" : "Contact"}
               title={isDemo ? "Découvrez Panoryx en démonstration." : "Discutons de vos opérations."}
@@ -49,11 +50,11 @@ export default async function ContactPage({
                 </div>
               </div>
             </div>
-          </div>
+          </FadeIn>
 
-          <div className="rounded-xl border border-navy-100 bg-white p-6 shadow-card sm:p-8">
+          <FadeIn delay={0.1} y={26} className="rounded-xl border border-navy-100 bg-white p-6 shadow-card sm:p-8">
             <ContactForm variant={isDemo ? "demo" : "contact"} />
-          </div>
+          </FadeIn>
         </div>
       </Container>
     </section>

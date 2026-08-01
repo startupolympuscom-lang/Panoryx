@@ -1,5 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { Fuel, Store, Warehouse, Building } from "lucide-react";
 
 const industries = [
@@ -13,22 +17,28 @@ export function IndustriesSection() {
   return (
     <section className="py-20 sm:py-28">
       <Container>
-        <SectionHeading
-          eyebrow="Secteurs desservis"
-          title="Conçu pour les entreprises multi-sites et à forte cadence opérationnelle."
-          align="center"
-          className="mx-auto"
-        />
-        <div className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <FadeIn>
+          <SectionHeading
+            eyebrow="Secteurs desservis"
+            title="Conçu pour les entreprises multi-sites et à forte cadence opérationnelle."
+            align="center"
+            className="mx-auto"
+          />
+        </FadeIn>
+        <StaggerGroup className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-4">
           {industries.map((ind) => (
-            <div key={ind.label} className="flex flex-col items-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full border border-navy-100 bg-navy-50 text-panoryx-blue">
+            <StaggerItem key={ind.label} className="flex flex-col items-center text-center">
+              <motion.div
+                whileHover={{ scale: 1.08, borderColor: "var(--color-panoryx-blue)" }}
+                transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                className="flex h-16 w-16 items-center justify-center rounded-full border border-navy-100 bg-navy-50 text-panoryx-blue"
+              >
                 <ind.icon size={26} aria-hidden="true" />
-              </div>
+              </motion.div>
               <p className="mt-4 text-sm font-medium text-navy-700">{ind.label}</p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </Container>
     </section>
   );

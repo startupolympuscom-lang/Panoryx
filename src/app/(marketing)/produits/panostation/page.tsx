@@ -16,6 +16,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { PanoramicArcs } from "@/components/brand/graphic-devices";
+import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { formatMAD } from "@/lib/utils";
 
 export const metadata: Metadata = {
@@ -97,55 +98,75 @@ export default function PanoStationPage() {
           className="pointer-events-none absolute -right-32 -top-32 h-[520px] w-[520px] opacity-50"
         />
         <Container className="relative">
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-signal-cyan">
-            Panoryx · Produit pour réseaux de stations-service
-          </p>
-          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
-            Pilotez chaque station. Maîtrisez chaque opération.
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy-200">
-            PanoStation centralise les ventes, les stocks de carburant, les équipes, les
-            fournisseurs et les opérations quotidiennes de votre réseau de stations-service.
-          </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <Button href="/contact?type=demo" size="lg">
-              Demander une démo
-            </Button>
-            <Button
-              href="/app/panostation"
-              size="lg"
-              variant="outline"
-              className="border-white/20 bg-transparent text-white hover:border-signal-cyan hover:text-signal-cyan"
-            >
-              Accéder à PanoStation
-            </Button>
-          </div>
+          <StaggerGroup once amount={0.6}>
+            <StaggerItem>
+              <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-signal-cyan">
+                Panoryx · Produit pour réseaux de stations-service
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                Pilotez chaque station. Maîtrisez chaque opération.
+              </h1>
+            </StaggerItem>
+            <StaggerItem>
+              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy-200">
+                PanoStation centralise les ventes, les stocks de carburant, les équipes, les
+                fournisseurs et les opérations quotidiennes de votre réseau de stations-service.
+              </p>
+            </StaggerItem>
+            <StaggerItem>
+              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                <Button href="/contact?type=demo" size="lg">
+                  Demander une démo
+                </Button>
+                <Button
+                  href="/app/panostation"
+                  size="lg"
+                  variant="outline"
+                  className="border-white/20 bg-transparent text-white hover:border-signal-cyan hover:text-signal-cyan"
+                >
+                  Accéder à PanoStation
+                </Button>
+              </div>
+            </StaggerItem>
+          </StaggerGroup>
         </Container>
       </section>
 
       <section className="py-20 sm:py-28">
         <Container>
-          <SectionHeading
-            eyebrow="Bénéfices opérationnels"
-            title="Une gestion de station enfin centralisée."
-          />
-          <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
+          <FadeIn>
+            <SectionHeading
+              eyebrow="Bénéfices opérationnels"
+              title="Une gestion de station enfin centralisée."
+            />
+          </FadeIn>
+          <StaggerGroup className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
             {benefits.map((b) => (
-              <div key={b.title} className="rounded-lg border border-navy-100 bg-white p-6">
+              <StaggerItem
+                key={b.title}
+                className="rounded-lg border border-navy-100 bg-white p-6 transition-shadow hover:shadow-card"
+              >
                 <h3 className="text-base font-semibold text-navy">{b.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-navy-500">{b.description}</p>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         </Container>
       </section>
 
       <section className="border-t border-navy-100 bg-navy-50/50 py-20 sm:py-28">
         <Container>
-          <SectionHeading eyebrow="Modules fonctionnels" title="Tout ce qu'il faut pour piloter une station au quotidien." />
-          <div className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <FadeIn>
+            <SectionHeading eyebrow="Modules fonctionnels" title="Tout ce qu'il faut pour piloter une station au quotidien." />
+          </FadeIn>
+          <StaggerGroup className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {modules.map((m) => (
-              <div key={m.title} className="flex gap-4 rounded-lg border border-navy-100 bg-white p-5">
+              <StaggerItem
+                key={m.title}
+                className="flex gap-4 rounded-lg border border-navy-100 bg-white p-5 transition-shadow hover:shadow-card"
+              >
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-panoryx-blue/10 text-panoryx-blue">
                   <m.icon size={18} aria-hidden="true" />
                 </div>
@@ -153,16 +174,16 @@ export default function PanoStationPage() {
                   <h3 className="text-sm font-semibold text-navy">{m.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-navy-500">{m.description}</p>
                 </div>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerGroup>
         </Container>
       </section>
 
       <section className="py-20 sm:py-28">
         <Container>
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
-            <div>
+            <FadeIn>
               <SectionHeading
                 eyebrow="Aperçu du tableau de bord"
                 title="Une visibilité en temps réel sur l'ensemble du réseau."
@@ -178,39 +199,47 @@ export default function PanoStationPage() {
                   )
                 )}
               </ul>
-            </div>
-            <DashboardPreview />
+            </FadeIn>
+            <FadeIn delay={0.15} y={30}>
+              <DashboardPreview />
+            </FadeIn>
           </div>
         </Container>
       </section>
 
       <section className="border-t border-navy-100 bg-navy-50/50 py-20 sm:py-28">
         <Container>
-          <SectionHeading eyebrow="Journée type" title="Le flux de travail d'un quart de station." />
-          <ol className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <FadeIn>
+            <SectionHeading eyebrow="Journée type" title="Le flux de travail d'un quart de station." />
+          </FadeIn>
+          <StaggerGroup as="ol" className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {workflow.map((step, i) => (
-              <li key={step} className="rounded-lg border border-navy-100 bg-white p-5">
+              <StaggerItem
+                key={step}
+                as="li"
+                className="rounded-lg border border-navy-100 bg-white p-5 transition-shadow hover:shadow-card"
+              >
                 <span className="brand-gradient-text text-xl font-extrabold">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <p className="mt-2 text-sm font-medium text-navy-700">{step}</p>
-              </li>
+              </StaggerItem>
             ))}
-          </ol>
+          </StaggerGroup>
         </Container>
       </section>
 
       <section className="py-20 sm:py-28">
         <Container>
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-            <div>
+            <FadeIn>
               <SectionHeading
                 eyebrow="Multi-sites"
                 title="Un réseau, une gouvernance."
                 description="Ajoutez autant de stations que nécessaire. Chaque station conserve ses propres cuves, pompes, équipes et quarts, tout en remontant vers une vue consolidée au niveau du réseau."
               />
-            </div>
-            <div>
+            </FadeIn>
+            <FadeIn delay={0.15}>
               <div className="mb-6 flex items-center gap-2 text-sm font-semibold text-navy">
                 <ShieldCheck size={18} className="text-panoryx-blue" aria-hidden="true" />
                 Accès basé sur les rôles
@@ -227,28 +256,30 @@ export default function PanoStationPage() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </FadeIn>
           </div>
         </Container>
       </section>
 
       <section className="border-t border-navy-100 bg-navy py-20 sm:py-28">
         <Container className="text-center">
-          <h2 className="mx-auto max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Prêt à piloter votre réseau de stations ?
-          </h2>
-          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href="/contact?type=demo" size="lg">
-              Demander une démo
-            </Button>
-            <Link
-              href="/app/panostation"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-signal-cyan hover:underline"
-            >
-              Accéder à PanoStation
-              <ArrowRight size={15} aria-hidden="true" />
-            </Link>
-          </div>
+          <FadeIn amount={0.6}>
+            <h2 className="mx-auto max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Prêt à piloter votre réseau de stations ?
+            </h2>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button href="/contact?type=demo" size="lg">
+                Demander une démo
+              </Button>
+              <Link
+                href="/app/panostation"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-signal-cyan hover:underline"
+              >
+                Accéder à PanoStation
+                <ArrowRight size={15} aria-hidden="true" />
+              </Link>
+            </div>
+          </FadeIn>
         </Container>
       </section>
     </>

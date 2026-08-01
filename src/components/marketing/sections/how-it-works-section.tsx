@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { OpenViewports } from "@/components/brand/graphic-devices";
+import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 
 const steps = [
   {
@@ -29,25 +30,27 @@ export function HowItWorksSection() {
       <Container>
         <div className="grid grid-cols-1 gap-14 lg:grid-cols-2 lg:items-center">
           <div>
-            <SectionHeading
-              eyebrow="Comment fonctionne la plateforme"
-              title="Une plateforme modulaire, pas un ERP monolithique."
-              description="Panoryx n'impose pas un bloc unique et rigide. Vous construisez progressivement votre système d'exploitation d'entreprise, module après module."
-            />
-            <ol className="mt-10 space-y-8">
+            <FadeIn>
+              <SectionHeading
+                eyebrow="Comment fonctionne la plateforme"
+                title="Une plateforme modulaire, pas un ERP monolithique."
+                description="Panoryx n'impose pas un bloc unique et rigide. Vous construisez progressivement votre système d'exploitation d'entreprise, module après module."
+              />
+            </FadeIn>
+            <StaggerGroup as="ol" className="mt-10 space-y-8">
               {steps.map((s) => (
-                <li key={s.number} className="flex gap-5">
+                <StaggerItem key={s.number} as="li" className="flex gap-5">
                   <span className="brand-gradient-text text-2xl font-extrabold">{s.number}</span>
                   <div>
                     <h3 className="text-base font-semibold text-navy">{s.title}</h3>
                     <p className="mt-1.5 text-sm leading-relaxed text-navy-500">{s.description}</p>
                   </div>
-                </li>
+                </StaggerItem>
               ))}
-            </ol>
+            </StaggerGroup>
           </div>
 
-          <div className="relative flex items-center justify-center">
+          <FadeIn y={0} delay={0.1} className="relative flex items-center justify-center">
             <OpenViewports className="h-64 w-64 animate-[spin_18s_linear_infinite] motion-reduce:animate-none sm:h-80 sm:w-80" />
             <div className="absolute flex flex-col items-center">
               <span className="text-xs font-bold uppercase tracking-widest text-navy-500">
@@ -55,7 +58,7 @@ export function HowItWorksSection() {
               </span>
               <span className="mt-1 text-sm font-semibold text-navy">Vue unifiée</span>
             </div>
-          </div>
+          </FadeIn>
         </div>
       </Container>
     </section>

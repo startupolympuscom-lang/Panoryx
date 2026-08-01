@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Field, Input } from "@/components/ui/form-fields";
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/ui/form-status";
 import { signUp } from "@/app/actions/auth";
 import type { FormActionState } from "@/app/actions/contact";
 
@@ -69,11 +70,7 @@ export function SignupForm({ next }: { next: string }) {
         <p className="text-xs font-medium text-action-coral">{state.fieldErrors.consent}</p>
       ) : null}
 
-      {state.status === "error" && state.message ? (
-        <p className="rounded-md bg-red-50 px-4 py-3 text-sm font-medium text-action-coral" role="alert">
-          {state.message}
-        </p>
-      ) : null}
+      {state.status === "error" && state.message ? <ErrorAlert>{state.message}</ErrorAlert> : null}
 
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
         {pending ? "Création du compte…" : "Créer mon compte"}

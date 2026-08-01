@@ -1,5 +1,9 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { Activity, Workflow, Building2, ShieldCheck } from "lucide-react";
 
 const capabilities = [
@@ -37,24 +41,28 @@ export function CapabilitiesSection() {
   return (
     <section className="py-20 sm:py-28">
       <Container>
-        <SectionHeading
-          eyebrow="Ce que Panoryx apporte"
-          title="Une vision panoramique, des opérations maîtrisées."
-          align="center"
-          className="mx-auto"
-        />
-        <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <FadeIn>
+          <SectionHeading
+            eyebrow="Ce que Panoryx apporte"
+            title="Une vision panoramique, des opérations maîtrisées."
+            align="center"
+            className="mx-auto"
+          />
+        </FadeIn>
+        <StaggerGroup className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2">
           {capabilities.map((c) => (
-            <div
+            <StaggerItem
               key={c.title}
-              className="group relative overflow-hidden rounded-lg border border-navy-100 bg-white p-7"
+              className="group relative overflow-hidden rounded-lg border border-navy-100 bg-white p-7 transition-shadow hover:shadow-card"
             >
-              <div
+              <motion.div
                 className="flex h-12 w-12 items-center justify-center rounded-md"
                 style={{ backgroundColor: `color-mix(in srgb, ${c.color} 12%, white)` }}
+                whileHover={{ scale: 1.08, rotate: -4 }}
+                transition={{ type: "spring", stiffness: 400, damping: 15 }}
               >
                 <c.icon size={22} color={c.color} strokeWidth={2} aria-hidden="true" />
-              </div>
+              </motion.div>
               <h3 className="mt-5 text-lg font-semibold text-navy">{c.title}</h3>
               <p className="mt-2.5 text-sm leading-relaxed text-navy-500">{c.description}</p>
               <span
@@ -62,9 +70,9 @@ export function CapabilitiesSection() {
                 style={{ backgroundColor: c.color }}
                 aria-hidden="true"
               />
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </Container>
     </section>
   );

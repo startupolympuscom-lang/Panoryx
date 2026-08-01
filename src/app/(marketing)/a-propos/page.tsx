@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Button } from "@/components/ui/button";
 import { GradientBands } from "@/components/brand/graphic-devices";
+import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { Eye, Link2, Zap, Target } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -23,27 +24,29 @@ export default function AboutPage() {
     <>
       <section className="border-b border-navy-100 bg-navy-50/50 py-20 sm:py-28">
         <Container>
-          <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-panoryx-blue">
-            À propos de Panoryx
-          </p>
-          <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-navy sm:text-5xl">
-            Panoramique visibilité. Connected operations.
-          </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy-500">
-            Panoryx est né d&apos;un constat simple : les entreprises modernes, en particulier
-            celles qui opèrent sur plusieurs sites, s&apos;appuient encore trop souvent sur des
-            feuilles de calcul, des documents papier et des outils qui ne communiquent pas entre
-            eux. Nous construisons une plateforme d&apos;opérations métier modulaire pour changer
-            cela.
-          </p>
-          <GradientBands className="mt-10 h-12 w-40 opacity-80" />
+          <FadeIn>
+            <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-panoryx-blue">
+              À propos de Panoryx
+            </p>
+            <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-navy sm:text-5xl">
+              Panoramique visibilité. Connected operations.
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy-500">
+              Panoryx est né d&apos;un constat simple : les entreprises modernes, en particulier
+              celles qui opèrent sur plusieurs sites, s&apos;appuient encore trop souvent sur des
+              feuilles de calcul, des documents papier et des outils qui ne communiquent pas entre
+              eux. Nous construisons une plateforme d&apos;opérations métier modulaire pour
+              changer cela.
+            </p>
+            <GradientBands className="mt-10 h-12 w-40 opacity-80" />
+          </FadeIn>
         </Container>
       </section>
 
       <section className="py-20 sm:py-28">
         <Container>
           <div className="grid grid-cols-1 gap-14 lg:grid-cols-2">
-            <div>
+            <FadeIn>
               <SectionHeading
                 eyebrow="Notre positionnement"
                 title="Pas un ERP de plus. Un système d'exploitation d'entreprise."
@@ -59,18 +62,23 @@ export default function AboutPage() {
                 stations-service. D&apos;autres produits Panoryx viendront progressivement
                 étendre la plateforme à d&apos;autres domaines opérationnels.
               </p>
-            </div>
+            </FadeIn>
             <div>
-              <SectionHeading eyebrow="Ce qui nous guide" title="Nos principes de conception" />
-              <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <FadeIn delay={0.1}>
+                <SectionHeading eyebrow="Ce qui nous guide" title="Nos principes de conception" />
+              </FadeIn>
+              <StaggerGroup className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2">
                 {values.map((v) => (
-                  <div key={v.title} className="rounded-lg border border-navy-100 bg-white p-5">
+                  <StaggerItem
+                    key={v.title}
+                    className="rounded-lg border border-navy-100 bg-white p-5 transition-shadow hover:shadow-card"
+                  >
                     <v.icon size={20} className="text-panoryx-blue" aria-hidden="true" />
                     <h3 className="mt-3 text-sm font-semibold text-navy">{v.title}</h3>
                     <p className="mt-1.5 text-sm leading-relaxed text-navy-500">{v.description}</p>
-                  </div>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerGroup>
             </div>
           </div>
         </Container>
@@ -78,14 +86,16 @@ export default function AboutPage() {
 
       <section className="border-t border-navy-100 bg-navy py-20 sm:py-28">
         <Container className="text-center">
-          <h2 className="mx-auto max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Envie d&apos;en discuter avec l&apos;équipe ?
-          </h2>
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button href="/contact" size="lg">
-              Nous contacter
-            </Button>
-          </div>
+          <FadeIn amount={0.6}>
+            <h2 className="mx-auto max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+              Envie d&apos;en discuter avec l&apos;équipe ?
+            </h2>
+            <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Button href="/contact" size="lg">
+                Nous contacter
+              </Button>
+            </div>
+          </FadeIn>
         </Container>
       </section>
     </>

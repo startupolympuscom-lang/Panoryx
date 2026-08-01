@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { Field, Input } from "@/components/ui/form-fields";
 import { Button } from "@/components/ui/button";
+import { ErrorAlert } from "@/components/ui/form-status";
 import { updatePassword } from "@/app/actions/auth";
 import type { FormActionState } from "@/app/actions/contact";
 
@@ -33,11 +34,7 @@ export function ResetPasswordForm() {
         Au moins 8 caractères, avec une lettre et un chiffre.
       </p>
 
-      {state.status === "error" && state.message ? (
-        <p className="rounded-md bg-red-50 px-4 py-3 text-sm font-medium text-action-coral" role="alert">
-          {state.message}
-        </p>
-      ) : null}
+      {state.status === "error" && state.message ? <ErrorAlert>{state.message}</ErrorAlert> : null}
 
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
         {pending ? "Mise à jour…" : "Réinitialiser le mot de passe"}

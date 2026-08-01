@@ -1,20 +1,40 @@
+"use client";
+
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/card";
+import type { ReactNode } from "react";
 import type { ProductDefinition } from "@/lib/data/products";
 
-export function ProductCard({ product }: { product: ProductDefinition }) {
+const MotionLink = motion.create(Link);
+
+/**
+ * `icon` is rendered by the caller (a Server Component) and passed down as
+ * an element. `product` deliberately excludes `icon` (a `LucideIcon`
+ * component reference) — functions can't cross the server/client boundary,
+ * so even carrying it unused on the object would break the RSC payload.
+ */
+export function ProductCard({
+  product,
+  icon,
+}: {
+  product: Omit<ProductDefinition, "icon">;
+  icon: ReactNode;
+}) {
   const isAvailable = product.availability === "disponible";
 
   const cardContent = (
     <>
       <div className="flex items-start justify-between">
-        <div
+        <motion.div
           className="flex h-12 w-12 items-center justify-center rounded-md"
           style={{ backgroundColor: `color-mix(in srgb, ${product.accentColor} 12%, white)` }}
+          whileHover={isAvailable ? { scale: 1.08, rotate: -4 } : undefined}
+          transition={{ type: "spring", stiffness: 400, damping: 15 }}
         >
-          <product.icon size={22} color={product.accentColor} aria-hidden="true" />
-        </div>
+          {icon}
+        </motion.div>
         <Badge tone={isAvailable ? "success" : "coming-soon"}>
           {isAvailable ? "Disponible" : "Bientôt disponible"}
         </Badge>
@@ -38,7 +58,7 @@ export function ProductCard({ product }: { product: ProductDefinition }) {
       {isAvailable ? (
         <span className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-panoryx-blue">
           Découvrir le produit
-          <ArrowRight size={15} aria-hidden="true" />
+          <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
         </span>
       ) : null}
     </>
@@ -46,18 +66,30 @@ export function ProductCard({ product }: { product: ProductDefinition }) {
 
   if (!isAvailable) {
     return (
-      <div className="rounded-lg border border-dashed border-navy-200 bg-navy-50/40 p-6">
+      <div className="relative h-full overflow-hidden rounded-lg border border-dashed border-navy-200 bg-navy-50/40 p-6">
         {cardContent}
       </div>
     );
   }
 
   return (
-    <Link
+    <MotionLink
       href={`/produits/${product.slug}`}
-      className="group rounded-lg border border-navy-100 bg-white p-6 transition-shadow hover:shadow-card"
+      className="group relative block h-full overflow-hidden rounded-lg border border-navy-100 bg-white p-6"
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 350, damping: 26 }}
+      style={{ boxShadow: "0 1px 1px rgba(17,24,44,0.03)" }}
     >
-      {cardContent}
-    </Link>
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 transition-transform duration-300 group-hover:scale-x-100"
+        style={{ backgroundColor: product.accentColor }}
+      />
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-0 shadow-card transition-opacity duration-300 group-hover:opacity-100"
+      />
+      <span className="relative">{cardContent}</span>
+    </MotionLink>
   );
 }

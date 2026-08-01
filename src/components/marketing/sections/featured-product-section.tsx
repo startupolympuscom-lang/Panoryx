@@ -1,6 +1,7 @@
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
+import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
 import { Fuel, Gauge, Users, Truck } from "lucide-react";
 
 const modules = [
@@ -14,7 +15,7 @@ export function FeaturedProductSection() {
   return (
     <section className="border-t border-navy-100 py-20 sm:py-28">
       <Container>
-        <div className="overflow-hidden rounded-xl bg-navy">
+        <FadeIn className="overflow-hidden rounded-xl bg-navy">
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="p-8 sm:p-12 lg:p-14">
               <Badge tone="info" className="bg-white/10 text-signal-cyan">
@@ -29,14 +30,14 @@ export function FeaturedProductSection() {
                 quotidiennes de votre réseau de stations-service.
               </p>
 
-              <div className="mt-8 grid grid-cols-2 gap-4">
+              <StaggerGroup className="mt-8 grid grid-cols-2 gap-4" amount={0.6}>
                 {modules.map((m) => (
-                  <div key={m.label} className="flex items-center gap-2.5 text-sm text-navy-100">
+                  <StaggerItem key={m.label} className="flex items-center gap-2.5 text-sm text-navy-100">
                     <m.icon size={17} className="text-signal-cyan" aria-hidden="true" />
                     {m.label}
-                  </div>
+                  </StaggerItem>
                 ))}
-              </div>
+              </StaggerGroup>
 
               <div className="mt-9 flex flex-col gap-3 sm:flex-row">
                 <Button href="/produits/panostation" size="md">
@@ -55,7 +56,7 @@ export function FeaturedProductSection() {
 
             <PanoStationPreview />
           </div>
-        </div>
+        </FadeIn>
       </Container>
     </section>
   );
@@ -75,7 +76,10 @@ function PanoStationPreview() {
           <p className="text-xs font-semibold uppercase tracking-wider text-navy-300">
             Vue réseau
           </p>
-          <span className="flex h-2 w-2 rounded-full bg-signal-cyan" aria-hidden="true" />
+          <span className="relative flex h-2 w-2" aria-hidden="true">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-signal-cyan/60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-signal-cyan" />
+          </span>
         </div>
         <ul className="mt-4 space-y-3">
           {stations.map((s) => (
