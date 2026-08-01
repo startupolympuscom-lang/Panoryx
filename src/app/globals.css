@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+:root {
+  /* Panoryx brand colors */
+  --color-panoryx-blue: #285cff;
+  --color-signal-cyan: #00c9e8;
+  --color-flow-violet: #7b3ff2;
+  --color-action-coral: #ff5b5f;
+  --color-pulse-orange: #ff9b42;
+  --color-core-navy: #11182c;
+  --color-cloud-white: #f7f9fc;
+
+  /* Supporting neutrals derived from Core Navy for UI surfaces/text */
+  --color-navy-900: #11182c;
+  --color-navy-800: #1a2340;
+  --color-navy-700: #2a3556;
+  --color-navy-500: #55618a;
+  --color-navy-300: #9aa3c2;
+  --color-navy-200: #c7cce0;
+  --color-navy-100: #e4e7f2;
+  --color-navy-50: #f2f4fa;
+
+  --background: var(--color-cloud-white);
+  --foreground: var(--color-core-navy);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+
+  --shadow-soft: 0 1px 2px rgba(17, 24, 44, 0.04), 0 8px 24px -8px rgba(17, 24, 44, 0.12);
+  --shadow-card: 0 1px 1px rgba(17, 24, 44, 0.03), 0 12px 32px -12px rgba(17, 24, 44, 0.16);
+}
+
+@theme inline {
+  --color-panoryx-blue: var(--color-panoryx-blue);
+  --color-signal-cyan: var(--color-signal-cyan);
+  --color-flow-violet: var(--color-flow-violet);
+  --color-action-coral: var(--color-action-coral);
+  --color-pulse-orange: var(--color-pulse-orange);
+  --color-core-navy: var(--color-core-navy);
+  --color-cloud-white: var(--color-cloud-white);
+
+  --color-navy-900: var(--color-navy-900);
+  --color-navy-800: var(--color-navy-800);
+  --color-navy-700: var(--color-navy-700);
+  --color-navy-500: var(--color-navy-500);
+  --color-navy-300: var(--color-navy-300);
+  --color-navy-200: var(--color-navy-200);
+  --color-navy-100: var(--color-navy-100);
+  --color-navy-50: var(--color-navy-50);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-navy: var(--color-core-navy);
+  --color-cloud: var(--color-cloud-white);
+
+  --font-sans: var(--font-inter);
+  --font-heading: var(--font-sora);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-card: var(--shadow-card);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+::selection {
+  background: var(--color-signal-cyan);
+  color: var(--color-core-navy);
+}
+
+/* Visible focus states for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--color-panoryx-blue);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.brand-gradient-text {
+  background: linear-gradient(90deg, var(--color-panoryx-blue), var(--color-flow-violet) 45%, var(--color-action-coral) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
