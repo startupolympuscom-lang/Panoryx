@@ -193,12 +193,15 @@ export async function createOrganization(
 
   if (error) {
     console.error("create_organization_with_owner failed:", error);
+    // Surface the real Postgres/PostgREST error (code + message) rather than
+    // a generic fallback: this is pre-launch and the concrete diagnostic is
+    // far more useful than hiding it, especially since we have no way to
+    // inspect the live database from outside.
     return {
       status: "error",
-      message:
-        error.message && error.code !== "PGRST202"
-          ? `Impossible de créer l'organisation : ${error.message}`
-          : "Impossible de créer l'organisation pour le moment. Veuillez réessayer ou contacter le support.",
+      message: `Impossible de créer l'organisation (${error.code ?? "erreur"}) : ${
+        error.message || "erreur inconnue"
+      }`,
     };
   }
 
