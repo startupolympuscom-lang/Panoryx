@@ -7,11 +7,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/", label: "Accueil" },
   { href: "/produits", label: "Produits" },
+  { href: "/#solutions", label: "Solutions" },
   { href: "/#pourquoi-panoryx", label: "Pourquoi Panoryx" },
-  { href: "/a-propos", label: "À propos" },
-  { href: "/contact", label: "Contact" },
+  { href: "/a-propos", label: "Ressources" },
 ];
 
 function isActiveRoute(pathname: string | null, href: string) {

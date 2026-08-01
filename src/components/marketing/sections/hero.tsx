@@ -1,9 +1,23 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { PanoramicArcs, Flowlines } from "@/components/brand/graphic-devices";
+import { PanoryxMark } from "@/components/brand/logo";
+import {
+  ArrowRight,
+  LayoutDashboard,
+  LineChart,
+  Box,
+  ShoppingCart,
+  DollarSign,
+  Users,
+  Settings,
+  SlidersHorizontal,
+  TrendingUp,
+  type LucideIcon,
+} from "lucide-react";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
@@ -19,67 +33,63 @@ const container = {
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-navy">
-      <div className="absolute inset-0" aria-hidden="true">
-        <motion.div
-          className="absolute -right-32 -top-40 h-[560px] w-[560px] sm:h-[720px] sm:w-[720px]"
-          initial={{ opacity: 0, scale: 0.9, rotate: -6 }}
-          animate={{ opacity: 0.6, scale: 1, rotate: 0 }}
-          transition={{ duration: 1.4, ease: easeOut }}
-        >
-          <motion.div
-            className="h-full w-full"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-          >
-            <PanoramicArcs strokeWidth={5} className="h-full w-full" />
-          </motion.div>
-        </motion.div>
-        <Flowlines
-          strokeWidth={5}
-          className="absolute -bottom-24 -left-24 h-72 w-72 -scale-x-100 opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy/0 via-navy/40 to-navy" />
-      </div>
+    <section className="relative overflow-hidden bg-white">
+      <div
+        className="absolute inset-0 opacity-[0.5]"
+        aria-hidden="true"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, var(--color-navy-200) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+          maskImage: "radial-gradient(ellipse 70% 60% at 70% 35%, black, transparent)",
+        }}
+      />
 
-      <Container className="relative py-24 sm:py-32 lg:py-36">
-        <motion.div className="max-w-3xl" variants={container} initial="hidden" animate="show">
+      <Container className="relative pt-16 pb-24 sm:pt-20 sm:pb-32 lg:pt-24">
+        <motion.div className="max-w-2xl" variants={container} initial="hidden" animate="show">
           <motion.p
             variants={fadeUp}
-            className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-signal-cyan"
+            className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-panoryx-blue"
           >
             Plateforme d&apos;opérations métier
           </motion.p>
           <motion.h1
             variants={fadeUp}
-            className="text-4xl font-bold tracking-tight text-white sm:text-5xl lg:text-6xl"
+            className="text-5xl font-bold tracking-tight text-navy sm:text-6xl lg:text-[4rem] lg:leading-[1.05]"
           >
-            Le système d&apos;exploitation des entreprises modernes.
+            Voyez tout.
+            <br />
+            Pilotez mieux.
           </motion.h1>
-          <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg leading-relaxed text-navy-200">
-            Panoryx réunit vos équipes, vos processus et vos données dans une plateforme
-            modulaire conçue pour vous donner une visibilité complète sur vos opérations.
+          <motion.p variants={fadeUp} className="mt-6 max-w-lg text-lg leading-relaxed text-navy-500">
+            Centralisez vos opérations, automatisez vos processus et prenez de meilleures
+            décisions en temps réel.
           </motion.p>
-          <motion.div variants={fadeUp} className="mt-10 flex flex-col gap-3 sm:flex-row">
+          <motion.div variants={fadeUp} className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
             <Button href="/contact?type=demo" size="lg">
               Demander une démo
             </Button>
             <Button
               href="/produits/panostation"
               size="lg"
-              variant="outline"
-              className="border-white/20 bg-transparent text-white hover:border-signal-cyan hover:text-signal-cyan"
+              variant="ghost"
+              className="group gap-2 px-2 text-panoryx-blue hover:bg-transparent hover:text-[#1e4cf0]"
             >
               Découvrir PanoStation
+              <ArrowRight
+                size={17}
+                className="transition-transform duration-200 group-hover:translate-x-1"
+                aria-hidden="true"
+              />
             </Button>
           </motion.div>
         </motion.div>
 
         <motion.div
-          className="relative mt-20"
+          className="relative mt-16 lg:mt-20"
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.5, ease: easeOut }}
+          transition={{ duration: 0.8, delay: 0.45, ease: easeOut }}
         >
           <OperationsVisual />
         </motion.div>
@@ -88,90 +98,297 @@ export function Hero() {
   );
 }
 
+const leftBadges: { label: string; icon: LucideIcon; color: string; top: number }[] = [
+  { label: "Ventes", icon: TrendingUp, color: "var(--color-panoryx-blue)", top: 130 },
+  { label: "Stocks", icon: Box, color: "var(--color-signal-cyan)", top: 320 },
+];
+
+const rightBadges: { label: string; icon: LucideIcon; color: string; top: number }[] = [
+  { label: "Finance", icon: DollarSign, color: "var(--color-pulse-orange)", top: 60 },
+  { label: "Équipes", icon: Users, color: "var(--color-flow-violet)", top: 225 },
+  { label: "Operations", icon: Settings, color: "var(--color-panoryx-blue)", top: 385 },
+];
+
+const leftPaths = [
+  "M 175 165 C 200 165, 205 180, 225 180",
+  "M 175 350 C 200 350, 205 320, 225 320",
+];
+
+const rightPaths = [
+  "M 775 150 C 805 150, 795 100, 825 100",
+  "M 775 260 C 805 260, 810 260, 825 260",
+  "M 775 320 C 805 320, 795 415, 825 415",
+];
+
+const pathDraw = {
+  hidden: { pathLength: 0, opacity: 0 },
+  show: (i: number) => ({
+    pathLength: 1,
+    opacity: 0.6,
+    transition: { duration: 1.4, delay: 0.9 + i * 0.12, ease: easeOut },
+  }),
+};
+
+const badgeShow = {
+  hidden: { opacity: 0, scale: 0.85 },
+  show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: easeOut } },
+};
+
+function FloatingBadge({
+  icon: Icon,
+  label,
+  color,
+  className,
+  style,
+  delay,
+}: {
+  icon: LucideIcon;
+  label: string;
+  color: string;
+  className?: string;
+  style?: CSSProperties;
+  delay: number;
+}) {
+  return (
+    <motion.div
+      className={className}
+      style={style}
+      variants={badgeShow}
+      initial="hidden"
+      animate="show"
+      transition={{ delay }}
+      whileHover={{ y: -3 }}
+    >
+      <div className="flex w-[168px] items-center gap-2.5 rounded-full border border-navy-100 bg-white px-4 py-2.5 shadow-card">
+        <span
+          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+          style={{ backgroundColor: `color-mix(in srgb, ${color} 14%, white)` }}
+        >
+          <Icon size={15} color={color} strokeWidth={2.25} aria-hidden="true" />
+        </span>
+        <span className="text-sm font-semibold text-navy">{label}</span>
+      </div>
+    </motion.div>
+  );
+}
+
 /**
- * Original branded visual representing connected operational modules,
- * real-time data flow, and panoramic visibility — built from the charter's
- * flowline / open-viewport language rather than a generic 3D illustration.
+ * Dashboard mockup + connected module badges, echoing the operational
+ * "vue panoramique" concept: one screen, everything feeding into it.
  */
 function OperationsVisual() {
-  const modules = [
-    { label: "Ventes", value: "1 284 320 MAD", color: "var(--color-panoryx-blue)" },
-    { label: "Stocks carburant", value: "94 300 L", color: "var(--color-signal-cyan)" },
-    { label: "Quarts actifs", value: "12", color: "var(--color-flow-violet)" },
-    { label: "Alertes", value: "3", color: "var(--color-action-coral)" },
-  ];
-
-  const pathDraw = {
-    hidden: { pathLength: 0, opacity: 0 },
-    show: (i: number) => ({
-      pathLength: 1,
-      opacity: 0.4,
-      transition: { duration: 1.6, delay: 0.9 + i * 0.15, ease: easeOut },
-    }),
-  };
-
   return (
-    <div className="relative rounded-xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm sm:p-8">
-      <svg
-        viewBox="0 0 800 220"
-        fill="none"
-        className="absolute inset-0 h-full w-full"
-        preserveAspectRatio="none"
-        aria-hidden="true"
-      >
-        <motion.path
-          d="M0 180 C 150 140, 250 200, 400 120 S 650 40, 800 90"
-          stroke="var(--color-panoryx-blue)"
-          strokeWidth="2"
-          custom={0}
-          variants={pathDraw}
-          initial="hidden"
-          animate="show"
-        />
-        <motion.path
-          d="M0 140 C 150 180, 300 100, 450 150 S 650 200, 800 130"
-          stroke="var(--color-signal-cyan)"
-          strokeWidth="2"
-          custom={1}
-          variants={pathDraw}
-          initial="hidden"
-          animate="show"
-        />
-        <motion.path
-          d="M0 100 C 200 60, 300 160, 500 100 S 700 60, 800 60"
-          stroke="var(--color-flow-violet)"
-          strokeWidth="2"
-          custom={2}
-          variants={pathDraw}
-          initial="hidden"
-          animate="show"
-        />
-      </svg>
-      <motion.div
-        className="relative grid grid-cols-2 gap-4 sm:grid-cols-4"
-        variants={{ show: { transition: { staggerChildren: 0.1, delayChildren: 0.75 } } }}
-        initial="hidden"
-        animate="show"
-      >
-        {modules.map((m) => (
-          <motion.div
-            key={m.label}
-            variants={{
-              hidden: { opacity: 0, y: 14, scale: 0.95 },
-              show: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: easeOut } },
-            }}
-            whileHover={{ y: -3 }}
-            className="rounded-lg border border-white/10 bg-navy-800/60 p-4 transition-colors hover:border-white/20"
-          >
-            <span
-              className="mb-3 block h-1.5 w-8 rounded-full"
-              style={{ backgroundColor: m.color }}
+    <>
+      <div className="mx-auto max-w-lg lg:hidden">
+        <DashboardMockup />
+      </div>
+
+      <div className="relative hidden h-[500px] lg:block">
+        <svg
+          className="absolute inset-0 h-full w-full"
+          viewBox="0 0 1000 500"
+          preserveAspectRatio="none"
+          fill="none"
+          aria-hidden="true"
+        >
+          {[...leftPaths, ...rightPaths].map((d, i) => (
+            <motion.path
+              key={d}
+              d={d}
+              stroke={
+                i < leftPaths.length
+                  ? leftBadges[i]?.color
+                  : rightBadges[i - leftPaths.length]?.color
+              }
+              strokeWidth="2"
+              custom={i}
+              variants={pathDraw}
+              initial="hidden"
+              animate="show"
             />
-            <p className="text-xs font-medium text-navy-300">{m.label}</p>
-            <p className="mt-1 text-lg font-bold text-white">{m.value}</p>
-          </motion.div>
+          ))}
+        </svg>
+
+        {leftBadges.map((b, i) => (
+          <FloatingBadge
+            key={b.label}
+            icon={b.icon}
+            label={b.label}
+            color={b.color}
+            className="absolute left-0"
+            style={{ top: b.top }}
+            delay={1 + i * 0.12}
+          />
         ))}
-      </motion.div>
+
+        {rightBadges.map((b, i) => (
+          <FloatingBadge
+            key={b.label}
+            icon={b.icon}
+            label={b.label}
+            color={b.color}
+            className="absolute right-0"
+            style={{ top: b.top }}
+            delay={1.15 + i * 0.12}
+          />
+        ))}
+
+        <div className="absolute left-1/2 top-1/2 w-[56%] -translate-x-1/2 -translate-y-1/2">
+          <DashboardMockup />
+        </div>
+      </div>
+    </>
+  );
+}
+
+const railIcons: { icon: LucideIcon; active?: boolean }[] = [
+  { icon: LayoutDashboard, active: true },
+  { icon: LineChart },
+  { icon: Box },
+  { icon: ShoppingCart },
+  { icon: DollarSign },
+  { icon: Users },
+  { icon: Settings },
+  { icon: SlidersHorizontal },
+];
+
+const kpiTilesRow1 = [
+  { label: "Ventes", value: "+12,4 %", hint: "vs mois dernier", color: "var(--color-panoryx-blue)" },
+  { label: "Stocks", value: "90 % sain", hint: "Taux de disponibilité", color: "var(--color-signal-cyan)" },
+  { label: "Alertes", value: "3 prioritaires", hint: "À traiter", color: "var(--color-action-coral)" },
+];
+
+const kpiTilesRow2 = [
+  { label: "Chiffre d'affaires", value: "1 284 320 MAD", hint: "+12,4 %", positive: true },
+  { label: "Marge brute", value: "32,8 %", hint: "+2,1 pts", positive: true },
+  { label: "Valeur du stock", value: "864 200 MAD", hint: "Sain", positive: true },
+  { label: "Effectif actif", value: "124", hint: "8 sites", positive: true },
+];
+
+const siteRows = [
+  { name: "Casablanca Centre", status: "Dans les objectifs", tone: "good" as const },
+  { name: "Rabat Agdal", status: "À surveiller", tone: "warn" as const },
+  { name: "Marrakech Guéliz", status: "Sain", tone: "good" as const },
+  { name: "Tanger Centre", status: "À risque", tone: "bad" as const },
+];
+
+const statusTone: Record<"good" | "warn" | "bad", string> = {
+  good: "text-signal-cyan",
+  warn: "text-pulse-orange",
+  bad: "text-action-coral",
+};
+
+function DashboardMockup() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-navy-100 bg-white shadow-2xl">
+      <div className="flex">
+        <aside
+          className="hidden w-14 shrink-0 flex-col items-center gap-4 bg-navy py-5 sm:flex"
+          aria-hidden="true"
+        >
+          <PanoryxMark size={20} className="mb-2 brightness-0 invert" />
+          {railIcons.map(({ icon: Icon, active }, i) => (
+            <span
+              key={i}
+              className={`flex h-8 w-8 items-center justify-center rounded-md ${
+                active ? "bg-panoryx-blue text-white" : "text-navy-300"
+              }`}
+            >
+              <Icon size={15} aria-hidden="true" />
+            </span>
+          ))}
+        </aside>
+
+        <div className="min-w-0 flex-1 p-4 sm:p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-bold text-navy">Vue opérationnelle</p>
+            <div className="flex gap-2">
+              <span className="rounded-md border border-navy-100 px-2.5 py-1 text-[11px] font-medium text-navy-500">
+                Tous les sites
+              </span>
+              <span className="hidden rounded-md border border-navy-100 px-2.5 py-1 text-[11px] font-medium text-navy-500 sm:inline">
+                Ce mois-ci
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            <div className="rounded-lg border border-navy-100 bg-navy-50/60 p-3">
+              <p className="text-[11px] font-medium text-navy-500">Indice opérationnel</p>
+              <p className="mt-1 text-lg font-bold text-navy">
+                87<span className="text-xs font-medium text-navy-300"> / 100</span>
+              </p>
+              <p className="mt-0.5 text-[11px] font-medium text-signal-cyan">Performance solide</p>
+            </div>
+            {kpiTilesRow1.map((t) => (
+              <div key={t.label} className="rounded-lg border border-navy-100 bg-navy-50/60 p-3">
+                <p className="text-[11px] font-medium text-navy-500">{t.label}</p>
+                <p className="mt-1 text-lg font-bold text-navy">{t.value}</p>
+                <p className="mt-0.5 text-[11px] font-medium" style={{ color: t.color }}>
+                  {t.hint}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-2.5 grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+            {kpiTilesRow2.map((t) => (
+              <div key={t.label} className="rounded-lg border border-navy-100 p-3">
+                <p className="text-[11px] font-medium text-navy-500">{t.label}</p>
+                <p className="mt-1 text-base font-bold text-navy">{t.value}</p>
+                <p className="mt-0.5 text-[11px] font-medium text-signal-cyan">{t.hint}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-2.5 hidden gap-2.5 sm:grid sm:grid-cols-3">
+            <div className="rounded-lg border border-navy-100 p-3">
+              <p className="text-[11px] font-semibold text-navy">Ventes et marge</p>
+              <svg viewBox="0 0 160 60" className="mt-2 h-14 w-full" aria-hidden="true">
+                <polyline
+                  points="0,45 25,30 50,38 75,20 100,28 125,10 160,16"
+                  fill="none"
+                  stroke="var(--color-panoryx-blue)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <div className="rounded-lg border border-navy-100 p-3">
+              <p className="text-[11px] font-semibold text-navy">État des stocks</p>
+              <div className="mt-2 flex items-center gap-3">
+                <div
+                  className="h-12 w-12 shrink-0 rounded-full"
+                  style={{
+                    background:
+                      "conic-gradient(var(--color-signal-cyan) 0% 72%, var(--color-pulse-orange) 72% 90%, var(--color-action-coral) 90% 100%)",
+                  }}
+                />
+                <div className="space-y-0.5 text-[10px] font-medium text-navy-500">
+                  <p>Sain 72 %</p>
+                  <p>Faible 18 %</p>
+                  <p>Critique 10 %</p>
+                </div>
+              </div>
+            </div>
+            <div className="rounded-lg border border-navy-100 p-3">
+              <p className="text-[11px] font-semibold text-navy">Performance par site</p>
+              <ul className="mt-2 space-y-1.5">
+                {siteRows.map((s) => (
+                  <li key={s.name} className="flex items-center justify-between gap-2">
+                    <span className="truncate text-[10px] text-navy-500">{s.name}</span>
+                    <span className={`shrink-0 text-[10px] font-semibold ${statusTone[s.tone]}`}>
+                      {s.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
+

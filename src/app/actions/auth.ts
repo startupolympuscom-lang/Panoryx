@@ -80,8 +80,17 @@ export async function signUp(
 
   if (data.session) {
     // Email confirmation is disabled on this project: we already have a
-    // session, so provision the organization right away.
-    await supabase.rpc("create_organization_with_owner", { org_name: companyName });
+    // session, so provision the organization right away. If this fails,
+    // fall through to onboarding instead of silently dropping the error —
+    // the user still needs an organization before they can use the app,
+    // and /app/onboarding will retry with a visible error message.
+    const { error: rpcError } = await supabase.rpc("create_organization_with_owner", {
+      org_name: companyName,
+    });
+    if (rpcError) {
+      console.error("create_organization_with_owner failed during signup:", rpcError);
+      redirect(`/app/onboarding?next=${encodeURIComponent(next)}`);
+    }
     redirect(next);
   }
 
@@ -163,14 +172,29 @@ export async function createOrganization(
   }
 
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      status: "error",
+      message: "Votre session a expiré. Veuillez vous reconnecter.",
+    };
+  }
+
   const { error } = await supabase.rpc("create_organization_with_owner", {
     org_name: parsed.data.organizationName,
   });
 
   if (error) {
+    console.error("create_organization_with_owner failed:", error);
     return {
       status: "error",
-      message: "Impossible de créer l'organisation pour le moment. Veuillez réessayer.",
+      message:
+        error.message && error.code !== "PGRST202"
+          ? `Impossible de créer l'organisation : ${error.message}`
+          : "Impossible de créer l'organisation pour le moment. Veuillez réessayer ou contacter le support.",
     };
   }
 

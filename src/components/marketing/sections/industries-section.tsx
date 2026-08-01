@@ -15,7 +15,7 @@ const industries = [
 
 export function IndustriesSection() {
   return (
-    <section className="py-20 sm:py-28">
+    <section id="solutions" className="py-20 sm:py-28">
       <Container>
         <FadeIn>
           <SectionHeading
