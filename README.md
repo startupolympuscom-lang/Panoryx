@@ -73,7 +73,39 @@ npm run dev
 
 Visit [http://localhost:3000](http://localhost:3000).
 
-## 6. Create a demo account (no credentials committed)
+## 6. Deploy to Vercel
+
+The app is a standard Next.js App Router project — no `vercel.json` is needed, Vercel
+auto-detects the framework, build command (`next build`), and Node version (pinned via
+`engines.node` in `package.json`).
+
+1. **Import the repository** at [vercel.com/new](https://vercel.com/new), selecting this
+   GitHub repo. Keep the default framework preset and build settings.
+2. **Set environment variables** (Project Settings → Environment Variables), for at least
+   the **Production** environment:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `NEXT_PUBLIC_SITE_URL` — set this to your **production URL** (e.g.
+     `https://your-app.vercel.app` or a custom domain), not `localhost`.
+
+   These are required for the app to render at all in production: the middleware
+   (`src/proxy.ts`) calls Supabase on every request to refresh the session, so a missing
+   or malformed Supabase URL/key will make every page error, not just the authenticated
+   ones.
+3. **Deploy.** Vercel builds and serves the app.
+4. **Update Supabase Auth URL Configuration** (Authentication → URL Configuration) to
+   match your deployed domain — this step is easy to miss and breaks email confirmation
+   and password-reset links if skipped:
+   - **Site URL**: your production URL (same value as `NEXT_PUBLIC_SITE_URL`)
+   - **Redirect URLs**: add `https://your-domain/auth/callback`
+5. If you use Vercel's **Preview Deployments** (a new URL per PR/branch), those preview
+   URLs won't match your Supabase redirect allow-list, so email-based auth flows
+   (confirmation, password reset) will only work correctly against Production. Direct
+   password sign-in works on previews regardless, since it doesn't redirect through
+   Supabase.
+
+## 7. Create a demo account (no credentials committed)
 
 No credentials are stored in this repository. To try the authenticated app:
 
@@ -98,7 +130,7 @@ values (
 );
 ```
 
-## 7. Testing
+## 8. Testing
 
 ```bash
 npm run test        # unit tests (Vitest) — utils, Zod schemas, UI primitives
@@ -113,7 +145,7 @@ right fields, and core marketing pages render. It runs against placeholder Supab
 credentials, so it doesn't cover a real signup/login round trip — once you've configured
 a real project, extend it with a full flow using a test account.
 
-## 8. Quality checks
+## 9. Quality checks
 
 ```bash
 npm run lint       # ESLint

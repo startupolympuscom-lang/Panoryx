@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { LogoLink } from "@/components/brand/logo";
+import { useHasMounted } from "@/lib/hooks/use-has-mounted";
 
 const links = [
   { href: "/", label: "Accueil" },
@@ -34,11 +35,7 @@ const itemVariants = {
 
 export function MobileNav({ isAuthed }: { isAuthed: boolean }) {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useHasMounted();
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
