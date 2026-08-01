@@ -3,19 +3,21 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { FadeIn, StaggerGroup, StaggerItem } from "@/components/motion/reveal";
+import { FadeIn } from "@/components/motion/reveal";
 import { Fuel, Store, Warehouse, Building } from "lucide-react";
 
 const industries = [
-  { icon: Fuel, label: "Réseaux de stations-service" },
-  { icon: Store, label: "Commerces & retail multi-sites" },
-  { icon: Warehouse, label: "Distributeurs & grossistes" },
-  { icon: Building, label: "Entreprises de services" },
+  { icon: Fuel, label: "Réseaux de stations-service", color: "var(--color-panoryx-blue)" },
+  { icon: Store, label: "Commerces & retail multi-sites", color: "var(--color-signal-cyan)" },
+  { icon: Warehouse, label: "Distributeurs & grossistes", color: "var(--color-flow-violet)" },
+  { icon: Building, label: "Entreprises de services", color: "var(--color-action-coral)" },
 ];
+
+const track = [...industries, ...industries];
 
 export function IndustriesSection() {
   return (
-    <section id="solutions" className="py-20 sm:py-28">
+    <section id="solutions" className="overflow-hidden py-20 sm:py-28">
       <Container>
         <FadeIn>
           <SectionHeading
@@ -25,21 +27,39 @@ export function IndustriesSection() {
             className="mx-auto"
           />
         </FadeIn>
-        <StaggerGroup className="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-4">
-          {industries.map((ind) => (
-            <StaggerItem key={ind.label} className="flex flex-col items-center text-center">
-              <motion.div
-                whileHover={{ scale: 1.08, borderColor: "var(--color-panoryx-blue)" }}
-                transition={{ type: "spring", stiffness: 400, damping: 15 }}
-                className="flex h-16 w-16 items-center justify-center rounded-full border border-navy-100 bg-navy-50 text-panoryx-blue"
-              >
-                <ind.icon size={26} aria-hidden="true" />
-              </motion.div>
-              <p className="mt-4 text-sm font-medium text-navy-700">{ind.label}</p>
-            </StaggerItem>
-          ))}
-        </StaggerGroup>
       </Container>
+
+      <FadeIn delay={0.1} className="relative mt-14">
+        <div
+          className="pointer-events-none absolute inset-0 z-10"
+          aria-hidden="true"
+          style={{
+            maskImage: "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+            WebkitMaskImage:
+              "linear-gradient(to right, transparent, black 12%, black 88%, transparent)",
+          }}
+        />
+        <motion.div
+          className="flex w-max gap-4"
+          animate={{ x: ["0%", "-50%"] }}
+          transition={{ duration: 26, repeat: Infinity, ease: "linear" }}
+        >
+          {track.map((ind, i) => (
+            <div
+              key={i}
+              className="flex items-center gap-3 whitespace-nowrap rounded-full border border-navy-100 bg-white px-6 py-4 shadow-soft transition-colors hover:border-navy-200"
+            >
+              <span
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+                style={{ backgroundColor: `color-mix(in srgb, ${ind.color} 12%, white)` }}
+              >
+                <ind.icon size={17} color={ind.color} strokeWidth={2} aria-hidden="true" />
+              </span>
+              <span className="text-sm font-semibold text-navy-700">{ind.label}</span>
+            </div>
+          ))}
+        </motion.div>
+      </FadeIn>
     </section>
   );
 }

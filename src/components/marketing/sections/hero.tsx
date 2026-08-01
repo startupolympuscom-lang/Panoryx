@@ -1,7 +1,7 @@
 "use client";
 
-import type { CSSProperties } from "react";
-import { motion } from "framer-motion";
+import { useRef, type CSSProperties } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { PanoryxMark } from "@/components/brand/logo";
@@ -44,6 +44,26 @@ export function Hero() {
           maskImage: "radial-gradient(ellipse 70% 60% at 70% 35%, black, transparent)",
         }}
       />
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <motion.div
+          className="absolute -right-24 top-10 h-[420px] w-[420px] rounded-full opacity-[0.25] blur-[110px]"
+          style={{
+            background:
+              "radial-gradient(circle, var(--color-panoryx-blue), transparent 70%)",
+          }}
+          animate={{ scale: [1, 1.12, 1], opacity: [0.22, 0.3, 0.22] }}
+          transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute right-40 bottom-0 h-[360px] w-[360px] rounded-full opacity-[0.18] blur-[100px]"
+          style={{
+            background:
+              "radial-gradient(circle, var(--color-flow-violet), transparent 70%)",
+          }}
+          animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.24, 0.15] }}
+          transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
+        />
+      </div>
 
       <Container className="relative pt-16 pb-24 sm:pt-20 sm:pb-32 lg:pt-24">
         <motion.div className="max-w-2xl" variants={container} initial="hidden" animate="show">
@@ -59,7 +79,7 @@ export function Hero() {
           >
             Voyez tout.
             <br />
-            Pilotez mieux.
+            <span className="brand-gradient-text">Pilotez mieux.</span>
           </motion.h1>
           <motion.p variants={fadeUp} className="mt-6 max-w-lg text-lg leading-relaxed text-navy-500">
             Centralisez vos opérations, automatisez vos processus et prenez de meilleures
@@ -141,6 +161,7 @@ function FloatingBadge({
   className,
   style,
   delay,
+  floatDuration,
 }: {
   icon: LucideIcon;
   label: string;
@@ -148,6 +169,7 @@ function FloatingBadge({
   className?: string;
   style?: CSSProperties;
   delay: number;
+  floatDuration: number;
 }) {
   return (
     <motion.div
@@ -157,9 +179,13 @@ function FloatingBadge({
       initial="hidden"
       animate="show"
       transition={{ delay }}
-      whileHover={{ y: -3 }}
     >
-      <div className="flex w-[168px] items-center gap-2.5 rounded-full border border-navy-100 bg-white px-4 py-2.5 shadow-card">
+      <motion.div
+        animate={{ y: [0, -6, 0] }}
+        transition={{ duration: floatDuration, repeat: Infinity, ease: "easeInOut", delay: delay + 0.5 }}
+        whileHover={{ y: -4, scale: 1.04 }}
+        className="flex w-[168px] items-center gap-2.5 rounded-full border border-navy-100 bg-white px-4 py-2.5 shadow-card transition-shadow hover:shadow-lg"
+      >
         <span
           className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
           style={{ backgroundColor: `color-mix(in srgb, ${color} 14%, white)` }}
@@ -167,7 +193,7 @@ function FloatingBadge({
           <Icon size={15} color={color} strokeWidth={2.25} aria-hidden="true" />
         </span>
         <span className="text-sm font-semibold text-navy">{label}</span>
-      </div>
+      </motion.div>
     </motion.div>
   );
 }
@@ -177,6 +203,8 @@ function FloatingBadge({
  * "vue panoramique" concept: one screen, everything feeding into it.
  */
 function OperationsVisual() {
+  const allPaths = [...leftPaths, ...rightPaths];
+
   return (
     <>
       <div className="mx-auto max-w-lg lg:hidden">
@@ -191,22 +219,43 @@ function OperationsVisual() {
           fill="none"
           aria-hidden="true"
         >
-          {[...leftPaths, ...rightPaths].map((d, i) => (
-            <motion.path
-              key={d}
-              d={d}
-              stroke={
-                i < leftPaths.length
-                  ? leftBadges[i]?.color
-                  : rightBadges[i - leftPaths.length]?.color
-              }
-              strokeWidth="2"
-              custom={i}
-              variants={pathDraw}
-              initial="hidden"
-              animate="show"
-            />
-          ))}
+          {allPaths.map((d, i) => {
+            const color =
+              i < leftPaths.length
+                ? leftBadges[i]?.color
+                : rightBadges[i - leftPaths.length]?.color;
+            return (
+              <g key={d}>
+                <motion.path
+                  d={d}
+                  stroke={color}
+                  strokeWidth="2"
+                  custom={i}
+                  variants={pathDraw}
+                  initial="hidden"
+                  animate="show"
+                />
+                <motion.path
+                  d={d}
+                  stroke={color}
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeDasharray="1 22"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.9, strokeDashoffset: [0, -46] }}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 1.6 + i * 0.12 },
+                    strokeDashoffset: {
+                      duration: 1.8,
+                      repeat: Infinity,
+                      ease: "linear",
+                      delay: 1.6 + i * 0.12,
+                    },
+                  }}
+                />
+              </g>
+            );
+          })}
         </svg>
 
         {leftBadges.map((b, i) => (
@@ -218,6 +267,7 @@ function OperationsVisual() {
             className="absolute left-0"
             style={{ top: b.top }}
             delay={1 + i * 0.12}
+            floatDuration={3.4 + i * 0.4}
           />
         ))}
 
@@ -230,14 +280,55 @@ function OperationsVisual() {
             className="absolute right-0"
             style={{ top: b.top }}
             delay={1.15 + i * 0.12}
+            floatDuration={3.8 + i * 0.4}
           />
         ))}
 
-        <div className="absolute left-1/2 top-1/2 w-[56%] -translate-x-1/2 -translate-y-1/2">
+        <TiltCard className="absolute left-1/2 top-1/2 w-[56%] -translate-x-1/2 -translate-y-1/2">
           <DashboardMockup />
-        </div>
+        </TiltCard>
       </div>
     </>
+  );
+}
+
+/**
+ * Wraps the dashboard mockup with a subtle pointer-driven 3D tilt —
+ * a small "alive" interaction that a flat screenshot can't convey.
+ */
+function TiltCard({ children, className }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springX = useSpring(mouseX, { stiffness: 150, damping: 20 });
+  const springY = useSpring(mouseY, { stiffness: 150, damping: 20 });
+  const rotateX = useTransform(springY, [-0.5, 0.5], [6, -6]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-8, 8]);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  }
+
+  function handleMouseLeave() {
+    mouseX.set(0);
+    mouseY.set(0);
+  }
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{ perspective: 1200 }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <motion.div style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}>
+        {children}
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -280,7 +371,10 @@ const statusTone: Record<"good" | "warn" | "bad", string> = {
 
 function DashboardMockup() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-navy-100 bg-white shadow-2xl">
+    <div
+      className="overflow-hidden rounded-2xl border border-navy-100 bg-white shadow-2xl"
+      style={{ boxShadow: "0 30px 70px -20px rgba(40, 92, 255, 0.25), 0 12px 28px -10px rgba(17, 24, 44, 0.15)" }}
+    >
       <div className="flex">
         <aside
           className="hidden w-14 shrink-0 flex-col items-center gap-4 bg-navy py-5 sm:flex"
