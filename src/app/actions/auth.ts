@@ -85,6 +85,19 @@ export async function signUp(
     redirect(`/app/onboarding?next=${encodeURIComponent(next)}`);
   }
 
+  // No session yet: Supabase's signup response reflects the user's
+  // confirmation state as of just before insert, so it can say
+  // "unconfirmed" even when a database-level workaround (or a fast
+  // confirmation trigger) confirms the row moments later in the same
+  // transaction. Try signing in immediately with the credentials just
+  // submitted — if the account is actually confirmed, this succeeds
+  // right away and the user skips the email step entirely instead of
+  // landing on a dead-end "check your email" page.
+  const { data: signInData } = await supabase.auth.signInWithPassword({ email, password });
+  if (signInData.session) {
+    redirect(`/app/onboarding?next=${encodeURIComponent(next)}`);
+  }
+
   redirect("/inscription/verification");
 }
 
