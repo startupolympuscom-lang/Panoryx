@@ -50,7 +50,6 @@ export async function signUp(
 ): Promise<FormActionState> {
   const parsed = signupSchema.safeParse({
     fullName: String(formData.get("fullName") ?? ""),
-    companyName: String(formData.get("companyName") ?? ""),
     email: String(formData.get("email") ?? ""),
     password: String(formData.get("password") ?? ""),
     confirmPassword: String(formData.get("confirmPassword") ?? ""),
@@ -61,7 +60,7 @@ export async function signUp(
     return { status: "error", fieldErrors: fieldErrorsFromZod(parsed.error) };
   }
 
-  const { fullName, companyName, email, password } = parsed.data;
+  const { fullName, email, password } = parsed.data;
   const next = safeNext(formData.get("next"));
   const supabase = await createClient();
 
@@ -69,7 +68,7 @@ export async function signUp(
     email,
     password,
     options: {
-      data: { full_name: fullName, company_name: companyName },
+      data: { full_name: fullName },
       emailRedirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent("/app/onboarding?next=" + next)}`,
     },
   });
@@ -79,19 +78,11 @@ export async function signUp(
   }
 
   if (data.session) {
-    // Email confirmation is disabled on this project: we already have a
-    // session, so provision the organization right away. If this fails,
-    // fall through to onboarding instead of silently dropping the error —
-    // the user still needs an organization before they can use the app,
-    // and /app/onboarding will retry with a visible error message.
-    const { error: rpcError } = await supabase.rpc("create_organization_with_owner", {
-      org_name: companyName,
-    });
-    if (rpcError) {
-      console.error("create_organization_with_owner failed during signup:", rpcError);
-      redirect(`/app/onboarding?next=${encodeURIComponent(next)}`);
-    }
-    redirect(next);
+    // We already have a session (email confirmation is off on this
+    // project), so send the user straight to the "name your organization"
+    // step — /app/onboarding — instead of guessing an organization name.
+    // Onboarding creates it and lands the user directly in the app.
+    redirect(`/app/onboarding?next=${encodeURIComponent(next)}`);
   }
 
   redirect("/inscription/verification");
