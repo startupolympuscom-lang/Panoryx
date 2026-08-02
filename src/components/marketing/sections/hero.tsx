@@ -31,6 +31,11 @@ const container = {
   show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
 };
 
+const letterVariants = {
+  hidden: { opacity: 0, y: 14 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: easeOut } },
+};
+
 export function Hero() {
   return (
     <section className="relative overflow-hidden bg-white">
@@ -65,8 +70,13 @@ export function Hero() {
         />
       </div>
 
-      <Container className="relative pt-16 pb-24 sm:pt-20 sm:pb-32 lg:pt-24">
-        <motion.div className="max-w-2xl" variants={container} initial="hidden" animate="show">
+      <Container className="relative pt-16 pb-16 sm:pt-20 sm:pb-24 lg:min-h-[600px] lg:pb-24 lg:pt-28">
+        <motion.div
+          className="max-w-2xl lg:max-w-sm"
+          variants={container}
+          initial="hidden"
+          animate="show"
+        >
           <motion.p
             variants={fadeUp}
             className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-panoryx-blue"
@@ -75,11 +85,23 @@ export function Hero() {
           </motion.p>
           <motion.h1
             variants={fadeUp}
-            className="text-5xl font-bold tracking-tight text-navy sm:text-6xl lg:text-[4rem] lg:leading-[1.05]"
+            className="text-5xl font-bold tracking-tight text-navy sm:text-6xl lg:text-[3.5rem] lg:leading-[1.05]"
           >
-            Voyez tout.
+            {"Voyez tout.".split("").map((char, i) => (
+              <motion.span key={`l1-${i}`} variants={letterVariants} className="inline-block">
+                {char === " " ? " " : char}
+              </motion.span>
+            ))}
             <br />
-            <span className="brand-gradient-text">Pilotez mieux.</span>
+            <motion.span
+              className="brand-gradient-text inline-block"
+              variants={{
+                hidden: { opacity: 0, y: 14 },
+                show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeOut, delay: 0.25 } },
+              }}
+            >
+              Pilotez mieux.
+            </motion.span>
           </motion.h1>
           <motion.p variants={fadeUp} className="mt-6 max-w-lg text-lg leading-relaxed text-navy-500">
             Centralisez vos opérations, automatisez vos processus et prenez de meilleures
@@ -106,12 +128,21 @@ export function Hero() {
         </motion.div>
 
         <motion.div
-          className="relative mt-16 lg:mt-20"
+          className="relative mt-16 lg:hidden"
           initial={{ opacity: 0, y: 30, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.45, ease: easeOut }}
         >
-          <OperationsVisual />
+          <MobileDashboard />
+        </motion.div>
+
+        <motion.div
+          className="hidden lg:absolute lg:right-0 lg:top-1/2 lg:block lg:w-[64%] lg:-translate-y-1/2"
+          initial={{ opacity: 0, x: 30, scale: 0.98 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.45, ease: easeOut }}
+        >
+          <DesktopOperationsVisual />
         </motion.div>
       </Container>
     </section>
@@ -119,8 +150,8 @@ export function Hero() {
 }
 
 const leftBadges: { label: string; icon: LucideIcon; color: string; top: number }[] = [
-  { label: "Ventes", icon: TrendingUp, color: "var(--color-panoryx-blue)", top: 130 },
-  { label: "Stocks", icon: Box, color: "var(--color-signal-cyan)", top: 320 },
+  { label: "Ventes", icon: TrendingUp, color: "var(--color-panoryx-blue)", top: 150 },
+  { label: "Stocks", icon: Box, color: "var(--color-signal-cyan)", top: 340 },
 ];
 
 const rightBadges: { label: string; icon: LucideIcon; color: string; top: number }[] = [
@@ -130,8 +161,8 @@ const rightBadges: { label: string; icon: LucideIcon; color: string; top: number
 ];
 
 const leftPaths = [
-  "M 175 165 C 200 165, 205 180, 225 180",
-  "M 175 350 C 200 350, 205 320, 225 320",
+  "M 175 185 C 200 185, 205 180, 225 180",
+  "M 175 365 C 200 365, 205 320, 225 320",
 ];
 
 const rightPaths = [
@@ -198,97 +229,99 @@ function FloatingBadge({
   );
 }
 
+function MobileDashboard() {
+  return (
+    <div className="mx-auto max-w-lg">
+      <DashboardMockup />
+    </div>
+  );
+}
+
 /**
  * Dashboard mockup + connected module badges, echoing the operational
  * "vue panoramique" concept: one screen, everything feeding into it.
  */
-function OperationsVisual() {
+function DesktopOperationsVisual() {
   const allPaths = [...leftPaths, ...rightPaths];
 
   return (
-    <>
-      <div className="mx-auto max-w-lg lg:hidden">
+    <div className="relative h-[500px] w-full">
+      <svg
+        className="absolute inset-0 h-full w-full"
+        viewBox="0 0 1000 500"
+        preserveAspectRatio="none"
+        fill="none"
+        aria-hidden="true"
+      >
+        {allPaths.map((d, i) => {
+          const color =
+            i < leftPaths.length
+              ? leftBadges[i]?.color
+              : rightBadges[i - leftPaths.length]?.color;
+          return (
+            <g key={d}>
+              <motion.path
+                d={d}
+                stroke={color}
+                strokeWidth="2"
+                custom={i}
+                variants={pathDraw}
+                initial="hidden"
+                animate="show"
+              />
+              <motion.path
+                d={d}
+                stroke={color}
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeDasharray="1 22"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.9, strokeDashoffset: [0, -46] }}
+                transition={{
+                  opacity: { duration: 0.6, delay: 1.6 + i * 0.12 },
+                  strokeDashoffset: {
+                    duration: 1.8,
+                    repeat: Infinity,
+                    ease: "linear",
+                    delay: 1.6 + i * 0.12,
+                  },
+                }}
+              />
+            </g>
+          );
+        })}
+      </svg>
+
+      {leftBadges.map((b, i) => (
+        <FloatingBadge
+          key={b.label}
+          icon={b.icon}
+          label={b.label}
+          color={b.color}
+          className="absolute left-0 z-10"
+          style={{ top: b.top }}
+          delay={1 + i * 0.12}
+          floatDuration={3.4 + i * 0.4}
+        />
+      ))}
+
+      {rightBadges.map((b, i) => (
+        <FloatingBadge
+          key={b.label}
+          icon={b.icon}
+          label={b.label}
+          color={b.color}
+          className="absolute right-0 z-10"
+          style={{ top: b.top }}
+          delay={1.15 + i * 0.12}
+          floatDuration={3.8 + i * 0.4}
+        />
+      ))}
+
+      <TiltCard className="absolute left-1/2 top-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2">
         <DashboardMockup />
-      </div>
-
-      <div className="relative hidden h-[500px] lg:block">
-        <svg
-          className="absolute inset-0 h-full w-full"
-          viewBox="0 0 1000 500"
-          preserveAspectRatio="none"
-          fill="none"
-          aria-hidden="true"
-        >
-          {allPaths.map((d, i) => {
-            const color =
-              i < leftPaths.length
-                ? leftBadges[i]?.color
-                : rightBadges[i - leftPaths.length]?.color;
-            return (
-              <g key={d}>
-                <motion.path
-                  d={d}
-                  stroke={color}
-                  strokeWidth="2"
-                  custom={i}
-                  variants={pathDraw}
-                  initial="hidden"
-                  animate="show"
-                />
-                <motion.path
-                  d={d}
-                  stroke={color}
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeDasharray="1 22"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.9, strokeDashoffset: [0, -46] }}
-                  transition={{
-                    opacity: { duration: 0.6, delay: 1.6 + i * 0.12 },
-                    strokeDashoffset: {
-                      duration: 1.8,
-                      repeat: Infinity,
-                      ease: "linear",
-                      delay: 1.6 + i * 0.12,
-                    },
-                  }}
-                />
-              </g>
-            );
-          })}
-        </svg>
-
-        {leftBadges.map((b, i) => (
-          <FloatingBadge
-            key={b.label}
-            icon={b.icon}
-            label={b.label}
-            color={b.color}
-            className="absolute left-0"
-            style={{ top: b.top }}
-            delay={1 + i * 0.12}
-            floatDuration={3.4 + i * 0.4}
-          />
-        ))}
-
-        {rightBadges.map((b, i) => (
-          <FloatingBadge
-            key={b.label}
-            icon={b.icon}
-            label={b.label}
-            color={b.color}
-            className="absolute right-0"
-            style={{ top: b.top }}
-            delay={1.15 + i * 0.12}
-            floatDuration={3.8 + i * 0.4}
-          />
-        ))}
-
-        <TiltCard className="absolute left-1/2 top-1/2 w-[56%] -translate-x-1/2 -translate-y-1/2">
-          <DashboardMockup />
-        </TiltCard>
-      </div>
-    </>
+      </TiltCard>
+    </div>
   );
 }
 
@@ -485,4 +518,3 @@ function DashboardMockup() {
     </div>
   );
 }
-
