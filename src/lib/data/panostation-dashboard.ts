@@ -57,7 +57,7 @@ export interface DashboardData {
   grossMarginToday: number | null;
   cashVarianceToday: number;
   openShiftsCount: number;
-  pendingDeliveriesCount: number;
+  deliveriesThisWeekCount: number;
   openIncidentsCount: number;
   tanks: TankSummary[];
   salesTrend: SalesTrendPoint[];
@@ -97,7 +97,7 @@ export async function getDashboardData(
       grossMarginToday: null,
       cashVarianceToday: 0,
       openShiftsCount: 0,
-      pendingDeliveriesCount: 0,
+      deliveriesThisWeekCount: 0,
       openIncidentsCount: 0,
       tanks: [],
       salesTrend: [],
@@ -116,7 +116,7 @@ export async function getDashboardData(
     { data: salesWeek },
     { data: tanksRaw },
     { data: openShifts },
-    { data: pendingPOs },
+    { data: deliveriesWeek },
     { data: openTickets },
     { data: cashToday },
     { data: recentSales },
@@ -141,11 +141,10 @@ export async function getDashboardData(
       .in("station_id", stationIds),
     supabase.from("shifts").select("id, station_id").in("station_id", stationIds).eq("status", "open"),
     supabase
-      .from("purchase_orders")
+      .from("fuel_deliveries")
       .select("id")
-      .eq("organization_id", organizationId)
       .in("station_id", stationIds)
-      .eq("status", "ordered"),
+      .gte("delivered_at", weekStart),
     supabase
       .from("maintenance_tickets")
       .select("id")
@@ -350,7 +349,7 @@ export async function getDashboardData(
     grossMarginToday,
     cashVarianceToday,
     openShiftsCount: openShifts?.length ?? 0,
-    pendingDeliveriesCount: pendingPOs?.length ?? 0,
+    deliveriesThisWeekCount: deliveriesWeek?.length ?? 0,
     openIncidentsCount: openTickets?.length ?? 0,
     tanks,
     salesTrend,
