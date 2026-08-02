@@ -4,6 +4,7 @@ import { getCurrentOrg } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { AddEmployeeForm } from "@/components/app/panostation/add-employee-form";
 import { Badge } from "@/components/ui/card";
+import { formatMAD, formatDateFr } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "PanoStation — Équipe" };
 
@@ -20,7 +21,7 @@ export default async function EquipePage() {
 
   const { data: employees } = await supabase
     .from("employees")
-    .select("id, full_name, role_title, phone, station_id, is_active")
+    .select("id, full_name, role_title, phone, station_id, is_active, salary, hired_at")
     .eq("organization_id", org.organizationId)
     .order("full_name");
 
@@ -51,14 +52,27 @@ export default async function EquipePage() {
                 <div>
                   <p className="text-sm font-medium text-navy">{e.full_name}</p>
                   <p className="text-xs text-navy-500">
-                    {[e.role_title, e.station_id ? stationNameById.get(e.station_id) : null, e.phone]
+                    {[
+                      e.role_title,
+                      e.station_id ? stationNameById.get(e.station_id) : null,
+                      e.phone,
+                      e.hired_at ? `Depuis le ${formatDateFr(e.hired_at)}` : null,
+                    ]
                       .filter(Boolean)
                       .join(" · ") || "—"}
                   </p>
                 </div>
-                <Badge tone={e.is_active ? "success" : "neutral"}>
-                  {e.is_active ? "Actif" : "Inactif"}
-                </Badge>
+                <div className="flex items-center gap-3">
+                  {e.salary ? (
+                    <span className="text-sm font-medium text-navy-700">
+                      {formatMAD(Number(e.salary))}
+                      <span className="text-navy-400">/mois</span>
+                    </span>
+                  ) : null}
+                  <Badge tone={e.is_active ? "success" : "neutral"}>
+                    {e.is_active ? "Actif" : "Inactif"}
+                  </Badge>
+                </div>
               </li>
             ))}
           </ul>

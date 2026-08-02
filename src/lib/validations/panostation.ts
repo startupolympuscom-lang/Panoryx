@@ -110,4 +110,26 @@ export const addEmployeeSchema = z.object({
   fullName: z.string().trim().min(2, "Nom requis."),
   roleTitle: z.string().trim().optional().or(z.literal("")),
   phone: z.string().trim().optional().or(z.literal("")),
+  salary: z.coerce.number().min(0, "Salaire invalide.").optional(),
+  hiredAt: z.string().trim().optional().or(z.literal("")),
+});
+
+export const addShopProductSchema = z
+  .object({
+    stationId: z.string().uuid(),
+    name: z.string().trim().min(1, "Nom du produit requis."),
+    costPrice: z.coerce.number().min(0, "Prix d'achat invalide."),
+    retailPrice: z.coerce.number().positive("Prix de vente invalide."),
+    stockQuantity: z.coerce.number().min(0, "Quantité invalide.").optional(),
+  })
+  .refine((d) => d.retailPrice > d.costPrice, {
+    message: "Le prix de vente doit être supérieur au prix d'achat.",
+    path: ["retailPrice"],
+  });
+
+export const recordShopSaleSchema = z.object({
+  stationId: z.string().uuid(),
+  productId: z.string().uuid(),
+  quantity: z.coerce.number().positive("Quantité invalide."),
+  soldAt: z.string().trim().optional().or(z.literal("")),
 });

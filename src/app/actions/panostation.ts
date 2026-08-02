@@ -17,6 +17,8 @@ import {
   createMaintenanceTicketSchema,
   updateMaintenanceTicketSchema,
   addEmployeeSchema,
+  addShopProductSchema,
+  recordShopSaleSchema,
 } from "@/lib/validations/panostation";
 import type { z } from "zod";
 
@@ -366,9 +368,71 @@ export async function addEmployee(
     full_name: parsed.data.fullName,
     role_title: parsed.data.roleTitle || null,
     phone: parsed.data.phone || null,
+    salary: parsed.data.salary ?? null,
+    hired_at: parsed.data.hiredAt || null,
   });
 
   if (error) return { error: "Impossible d'ajouter l'employé." };
   revalidatePath("/app/panostation/equipe");
+  return {};
+}
+
+export async function addShopProduct(
+  input: z.infer<typeof addShopProductSchema>
+): Promise<ActionResult> {
+  const parsed = addShopProductSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("shop_products").insert({
+    station_id: parsed.data.stationId,
+    name: parsed.data.name,
+    cost_price: parsed.data.costPrice,
+    retail_price: parsed.data.retailPrice,
+    stock_quantity: parsed.data.stockQuantity ?? 0,
+  });
+
+  if (error) return { error: "Impossible d'ajouter le produit." };
+  revalidatePath("/app/panostation/boutique");
+  return {};
+}
+
+export async function recordShopSale(
+  userId: string,
+  input: z.infer<typeof recordShopSaleSchema>
+): Promise<ActionResult> {
+  const parsed = recordShopSaleSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { data: product, error: productError } = await supabase
+    .from("shop_products")
+    .select("cost_price, retail_price, stock_quantity")
+    .eq("id", parsed.data.productId)
+    .single();
+
+  if (productError || !product) return { error: "Produit introuvable." };
+
+  const { error } = await supabase.from("shop_sales").insert({
+    station_id: parsed.data.stationId,
+    product_id: parsed.data.productId,
+    quantity: parsed.data.quantity,
+    unit_cost: product.cost_price,
+    unit_price: product.retail_price,
+    sold_at: parsed.data.soldAt ? new Date(parsed.data.soldAt).toISOString() : new Date().toISOString(),
+    recorded_by: userId,
+  });
+
+  if (error) return { error: "Impossible d'enregistrer la vente." };
+
+  await supabase
+    .from("shop_products")
+    .update({
+      stock_quantity: Math.max(0, Number(product.stock_quantity) - parsed.data.quantity),
+    })
+    .eq("id", parsed.data.productId);
+
+  revalidatePath("/app/panostation/boutique");
+  revalidatePath("/app/panostation/rapports");
   return {};
 }
