@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Fuel,
@@ -100,12 +101,22 @@ export default function PanoStationPage() {
         <Container className="relative">
           <StaggerGroup once amount={0.6}>
             <StaggerItem>
-              <p className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-signal-cyan">
+              <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-signal-cyan">
                 Panoryx · Produit pour réseaux de stations-service
               </p>
             </StaggerItem>
             <StaggerItem>
-              <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+              <Image
+                src="/brand/panostation/panostation-logo-dark.png"
+                alt="PanoStation"
+                width={1744}
+                height={887}
+                priority
+                className="h-10 w-auto sm:h-12"
+              />
+            </StaggerItem>
+            <StaggerItem>
+              <h1 className="mt-6 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
                 Pilotez chaque station. Maîtrisez chaque opération.
               </h1>
             </StaggerItem>

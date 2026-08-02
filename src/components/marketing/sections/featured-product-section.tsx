@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Container } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/card";
@@ -21,9 +22,14 @@ export function FeaturedProductSection() {
               <Badge tone="info" className="bg-white/10 text-signal-cyan">
                 Produit phare
               </Badge>
-              <h2 className="mt-5 text-3xl font-bold tracking-tight text-white sm:text-4xl">
-                PanoStation
-              </h2>
+              <h2 className="sr-only">PanoStation</h2>
+              <Image
+                src="/brand/panostation/panostation-logo-dark.png"
+                alt="PanoStation"
+                width={1744}
+                height={887}
+                className="mt-5 h-9 w-auto sm:h-11"
+              />
               <p className="mt-4 text-lg leading-relaxed text-navy-200">
                 Pilotez chaque station. Maîtrisez chaque opération. PanoStation centralise les
                 ventes, les stocks de carburant, les équipes, les fournisseurs et les opérations
