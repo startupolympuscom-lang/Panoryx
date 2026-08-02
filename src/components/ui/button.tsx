@@ -10,7 +10,7 @@ type Size = "sm" | "md" | "lg";
 
 const variantClasses: Record<Variant, string> = {
   primary:
-    "bg-panoryx-blue text-white hover:bg-[#1e4cf0] shadow-soft hover:shadow-[0_8px_24px_-6px_rgba(40,92,255,0.55)] focus-visible:outline-cloud-white",
+    "relative overflow-hidden bg-panoryx-blue text-white hover:bg-[#1e4cf0] shadow-soft hover:shadow-[0_8px_24px_-6px_rgba(40,92,255,0.55)] focus-visible:outline-cloud-white",
   secondary:
     "bg-navy text-white hover:bg-navy-800 shadow-soft",
   outline:
@@ -68,14 +68,22 @@ const tapHover = {
 
 const MotionLink = motion.create(Link);
 
+const shine = (
+  <span
+    aria-hidden="true"
+    className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-[200%] transition-transform duration-700 ease-out group-hover:translate-x-[400%]"
+  />
+);
+
 export function Button(props: ButtonProps) {
   const { variant = "primary", size = "md", className, children, ...rest } = props;
-  const classes = cn(base, variantClasses[variant], sizeClasses[size], className);
+  const classes = cn(base, "group", variantClasses[variant], sizeClasses[size], className);
 
   if ("href" in props && props.href) {
     const { href, ...anchorRest } = rest as Omit<ButtonAsLink, keyof CommonProps>;
     return (
       <MotionLink href={href} className={classes} {...tapHover} {...anchorRest}>
+        {variant === "primary" ? shine : null}
         {children}
       </MotionLink>
     );
@@ -90,7 +98,8 @@ export function Button(props: ButtonProps) {
       {...(disabled ? {} : tapHover)}
       {...buttonRest}
     >
-      {children}
+      {variant === "primary" ? shine : null}
+      <span className="relative">{children}</span>
     </motion.button>
   );
 }
