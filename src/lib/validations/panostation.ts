@@ -133,3 +133,87 @@ export const recordShopSaleSchema = z.object({
   quantity: z.coerce.number().positive("Quantité invalide."),
   soldAt: z.string().trim().optional().or(z.literal("")),
 });
+
+// --- Caisse des crédits clients (module 8) ---
+
+export const addCreditCustomerSchema = z.object({
+  stationId: z.string().uuid(),
+  name: z.string().trim().min(2, "Nom requis."),
+  phone: z.string().trim().optional().or(z.literal("")),
+  creditLimit: z.coerce.number().min(0, "Plafond invalide.").optional(),
+});
+
+export const recordCreditTransactionSchema = z.object({
+  customerId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  type: z.enum(["charge", "advance"]),
+  amount: z.coerce.number().positive("Montant invalide."),
+  note: z.string().trim().optional().or(z.literal("")),
+});
+
+// --- Rapprochement bancaire (modules 9 et 10.1) ---
+
+export const recordBankDepositSchema = z.object({
+  stationId: z.string().uuid(),
+  depositorName: z.string().trim().min(2, "Nom requis."),
+  amount: z.coerce.number().positive("Montant invalide."),
+  depositDate: z.string().trim().optional().or(z.literal("")),
+});
+
+export const recordBankMessageSchema = z.object({
+  stationId: z.string().uuid(),
+  messageType: z.enum(["debit", "credit", "info"]),
+  amount: z.coerce.number().positive("Montant invalide.").optional(),
+  rawText: z.string().trim().min(1, "Texte du message requis."),
+});
+
+export const matchBankDepositSchema = z.object({
+  depositId: z.string().uuid(),
+  messageId: z.string().uuid(),
+});
+
+// --- Point de vente Café / Restaurant (module 14) ---
+
+export const addCafeProductSchema = z.object({
+  stationId: z.string().uuid(),
+  name: z.string().trim().min(1, "Nom requis."),
+  category: z.string().trim().optional().or(z.literal("")),
+  price: z.coerce.number().positive("Prix invalide."),
+});
+
+export const addCafeIngredientSchema = z.object({
+  stationId: z.string().uuid(),
+  name: z.string().trim().min(1, "Nom requis."),
+  unit: z.string().trim().min(1, "Unité requise."),
+  stockQuantity: z.coerce.number().min(0, "Quantité invalide.").optional(),
+  costPerUnit: z.coerce.number().min(0, "Coût invalide.").optional(),
+  lowStockThreshold: z.coerce.number().min(0, "Seuil invalide.").optional(),
+});
+
+export const setCafeRecipeSchema = z.object({
+  productId: z.string().uuid(),
+  items: z.array(
+    z.object({
+      ingredientId: z.string().uuid(),
+      quantityRequired: z.coerce.number().positive("Quantité invalide."),
+    })
+  ),
+});
+
+export const recordCafeOrderSchema = z.object({
+  stationId: z.string().uuid(),
+  items: z
+    .array(
+      z.object({
+        productId: z.string().uuid(),
+        quantity: z.coerce.number().positive("Quantité invalide."),
+      })
+    )
+    .min(1, "Ajoutez au moins un article à la commande."),
+});
+
+export const recordCafeStockCountSchema = z.object({
+  ingredientId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  countedQuantity: z.coerce.number().min(0, "Quantité invalide."),
+});

@@ -13,6 +13,9 @@ import {
   BarChart3,
   Settings,
   ShoppingBag,
+  CreditCard,
+  Landmark,
+  Coffee,
 } from "lucide-react";
 
 export interface NavItem {
@@ -30,6 +33,9 @@ export const panoStationNavItems: NavItem[] = [
   { href: "/app/panostation/livraisons", label: "Livraisons", icon: Truck },
   { href: "/app/panostation/caisse", label: "Caisse", icon: Wallet },
   { href: "/app/panostation/boutique", label: "Boutique", icon: ShoppingBag },
+  { href: "/app/panostation/credits", label: "Crédits clients", icon: CreditCard },
+  { href: "/app/panostation/banque", label: "Rapprochement bancaire", icon: Landmark },
+  { href: "/app/panostation/cafe", label: "Café / Restaurant", icon: Coffee },
   { href: "/app/panostation/fournisseurs", label: "Fournisseurs", icon: Building2 },
   { href: "/app/panostation/equipe", label: "Équipe", icon: Users },
   { href: "/app/panostation/maintenance", label: "Maintenance et incidents", icon: Wrench },

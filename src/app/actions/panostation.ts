@@ -19,6 +19,16 @@ import {
   addEmployeeSchema,
   addShopProductSchema,
   recordShopSaleSchema,
+  addCreditCustomerSchema,
+  recordCreditTransactionSchema,
+  recordBankDepositSchema,
+  recordBankMessageSchema,
+  matchBankDepositSchema,
+  addCafeProductSchema,
+  addCafeIngredientSchema,
+  setCafeRecipeSchema,
+  recordCafeOrderSchema,
+  recordCafeStockCountSchema,
 } from "@/lib/validations/panostation";
 import type { z } from "zod";
 
@@ -434,5 +444,306 @@ export async function recordShopSale(
 
   revalidatePath("/app/panostation/boutique");
   revalidatePath("/app/panostation/rapports");
+  return {};
+}
+
+// --- Caisse des crédits clients (module 8) ---
+
+export async function addCreditCustomer(
+  input: z.infer<typeof addCreditCustomerSchema>
+): Promise<ActionResult> {
+  const parsed = addCreditCustomerSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("credit_customers").insert({
+    station_id: parsed.data.stationId,
+    name: parsed.data.name,
+    phone: parsed.data.phone || null,
+    credit_limit: parsed.data.creditLimit ?? null,
+  });
+
+  if (error) return { error: "Impossible d'ajouter le client." };
+  revalidatePath("/app/panostation/credits");
+  return {};
+}
+
+export async function recordCreditTransaction(
+  userId: string,
+  input: z.infer<typeof recordCreditTransactionSchema>
+): Promise<ActionResult> {
+  const parsed = recordCreditTransactionSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("credit_transactions").insert({
+    customer_id: parsed.data.customerId,
+    station_id: parsed.data.stationId,
+    type: parsed.data.type,
+    amount: parsed.data.amount,
+    note: parsed.data.note || null,
+    recorded_by: userId,
+  });
+
+  if (error) return { error: "Impossible d'enregistrer l'opération." };
+  revalidatePath("/app/panostation/credits");
+  return {};
+}
+
+// --- Rapprochement bancaire (modules 9 et 10.1) ---
+
+export async function recordBankDeposit(
+  userId: string,
+  input: z.infer<typeof recordBankDepositSchema>
+): Promise<ActionResult> {
+  const parsed = recordBankDepositSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("bank_deposits").insert({
+    station_id: parsed.data.stationId,
+    depositor_name: parsed.data.depositorName,
+    amount: parsed.data.amount,
+    deposit_date: parsed.data.depositDate || new Date().toISOString().slice(0, 10),
+    recorded_by: userId,
+  });
+
+  if (error) return { error: "Impossible d'enregistrer le versement." };
+  revalidatePath("/app/panostation/banque");
+  return {};
+}
+
+export async function recordBankMessage(
+  userId: string,
+  input: z.infer<typeof recordBankMessageSchema>
+): Promise<ActionResult> {
+  const parsed = recordBankMessageSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("bank_messages").insert({
+    station_id: parsed.data.stationId,
+    message_type: parsed.data.messageType,
+    amount: parsed.data.amount ?? null,
+    raw_text: parsed.data.rawText,
+    recorded_by: userId,
+  });
+
+  if (error) return { error: "Impossible d'enregistrer le message." };
+  revalidatePath("/app/panostation/banque");
+  return {};
+}
+
+export async function matchBankDeposit(
+  input: z.infer<typeof matchBankDepositSchema>
+): Promise<ActionResult> {
+  const parsed = matchBankDepositSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error: messageError } = await supabase
+    .from("bank_messages")
+    .update({ matched_deposit_id: parsed.data.depositId })
+    .eq("id", parsed.data.messageId);
+
+  if (messageError) return { error: "Impossible de rapprocher le message." };
+
+  const { error: depositError } = await supabase
+    .from("bank_deposits")
+    .update({ status: "matched" })
+    .eq("id", parsed.data.depositId);
+
+  if (depositError) return { error: "Impossible de mettre à jour le versement." };
+
+  revalidatePath("/app/panostation/banque");
+  return {};
+}
+
+// --- Point de vente Café / Restaurant (module 14) ---
+
+export async function addCafeProduct(
+  input: z.infer<typeof addCafeProductSchema>
+): Promise<ActionResult> {
+  const parsed = addCafeProductSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("cafe_products").insert({
+    station_id: parsed.data.stationId,
+    name: parsed.data.name,
+    category: parsed.data.category || null,
+    price: parsed.data.price,
+  });
+
+  if (error) return { error: "Impossible d'ajouter le produit." };
+  revalidatePath("/app/panostation/cafe");
+  return {};
+}
+
+export async function addCafeIngredient(
+  input: z.infer<typeof addCafeIngredientSchema>
+): Promise<ActionResult> {
+  const parsed = addCafeIngredientSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error } = await supabase.from("cafe_ingredients").insert({
+    station_id: parsed.data.stationId,
+    name: parsed.data.name,
+    unit: parsed.data.unit,
+    stock_quantity: parsed.data.stockQuantity ?? 0,
+    cost_per_unit: parsed.data.costPerUnit ?? 0,
+    low_stock_threshold: parsed.data.lowStockThreshold ?? null,
+  });
+
+  if (error) return { error: "Impossible d'ajouter l'ingrédient." };
+  revalidatePath("/app/panostation/cafe");
+  return {};
+}
+
+export async function setCafeRecipe(
+  input: z.infer<typeof setCafeRecipeSchema>
+): Promise<ActionResult> {
+  const parsed = setCafeRecipeSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { error: deleteError } = await supabase
+    .from("cafe_recipe_items")
+    .delete()
+    .eq("product_id", parsed.data.productId);
+
+  if (deleteError) return { error: "Impossible de mettre à jour la recette." };
+
+  if (parsed.data.items.length > 0) {
+    const { error: insertError } = await supabase.from("cafe_recipe_items").insert(
+      parsed.data.items.map((item) => ({
+        product_id: parsed.data.productId,
+        ingredient_id: item.ingredientId,
+        quantity_required: item.quantityRequired,
+      }))
+    );
+    if (insertError) return { error: "Impossible d'enregistrer la recette." };
+  }
+
+  revalidatePath("/app/panostation/cafe");
+  return {};
+}
+
+export async function recordCafeOrder(
+  userId: string,
+  input: z.infer<typeof recordCafeOrderSchema>
+): Promise<ActionResult> {
+  const parsed = recordCafeOrderSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const productIds = [...new Set(parsed.data.items.map((i) => i.productId))];
+  const { data: products, error: productsError } = await supabase
+    .from("cafe_products")
+    .select("id, price")
+    .in("id", productIds);
+
+  if (productsError || !products || products.length !== productIds.length) {
+    return { error: "Un ou plusieurs produits sont introuvables." };
+  }
+
+  const priceById = new Map(products.map((p) => [p.id, Number(p.price)]));
+  const totalAmount = parsed.data.items.reduce(
+    (sum, item) => sum + (priceById.get(item.productId) ?? 0) * item.quantity,
+    0
+  );
+
+  const { data: order, error: orderError } = await supabase
+    .from("cafe_orders")
+    .insert({
+      station_id: parsed.data.stationId,
+      total_amount: Math.round(totalAmount * 100) / 100,
+      recorded_by: userId,
+    })
+    .select("id")
+    .single();
+
+  if (orderError || !order) return { error: "Impossible de créer la commande." };
+
+  const { error: itemsError } = await supabase.from("cafe_order_items").insert(
+    parsed.data.items.map((item) => ({
+      order_id: order.id,
+      product_id: item.productId,
+      quantity: item.quantity,
+      unit_price: priceById.get(item.productId) ?? 0,
+    }))
+  );
+
+  if (itemsError) return { error: "Commande créée, mais l'enregistrement des articles a échoué." };
+
+  const { data: recipeItems } = await supabase
+    .from("cafe_recipe_items")
+    .select("product_id, ingredient_id, quantity_required")
+    .in("product_id", productIds);
+
+  if (recipeItems && recipeItems.length > 0) {
+    const consumptionByIngredient = new Map<string, number>();
+    for (const item of parsed.data.items) {
+      for (const recipe of recipeItems) {
+        if (recipe.product_id !== item.productId) continue;
+        const current = consumptionByIngredient.get(recipe.ingredient_id) ?? 0;
+        consumptionByIngredient.set(
+          recipe.ingredient_id,
+          current + Number(recipe.quantity_required) * item.quantity
+        );
+      }
+    }
+
+    for (const [ingredientId, consumed] of consumptionByIngredient) {
+      const { data: ingredient } = await supabase
+        .from("cafe_ingredients")
+        .select("stock_quantity")
+        .eq("id", ingredientId)
+        .single();
+      if (!ingredient) continue;
+      await supabase
+        .from("cafe_ingredients")
+        .update({ stock_quantity: Math.max(0, Number(ingredient.stock_quantity) - consumed) })
+        .eq("id", ingredientId);
+    }
+  }
+
+  revalidatePath("/app/panostation/cafe");
+  return {};
+}
+
+export async function recordCafeStockCount(
+  userId: string,
+  input: z.infer<typeof recordCafeStockCountSchema>
+): Promise<ActionResult> {
+  const parsed = recordCafeStockCountSchema.safeParse(input);
+  if (!parsed.success) return { error: firstIssueMessage(parsed.error) };
+
+  const supabase = await createClient();
+  const { data: ingredient, error: ingredientError } = await supabase
+    .from("cafe_ingredients")
+    .select("stock_quantity")
+    .eq("id", parsed.data.ingredientId)
+    .single();
+
+  if (ingredientError || !ingredient) return { error: "Ingrédient introuvable." };
+
+  const { error } = await supabase.from("cafe_stock_counts").insert({
+    ingredient_id: parsed.data.ingredientId,
+    station_id: parsed.data.stationId,
+    theoretical_quantity: ingredient.stock_quantity,
+    counted_quantity: parsed.data.countedQuantity,
+    counted_by: userId,
+  });
+
+  if (error) return { error: "Impossible d'enregistrer le comptage." };
+
+  await supabase
+    .from("cafe_ingredients")
+    .update({ stock_quantity: parsed.data.countedQuantity })
+    .eq("id", parsed.data.ingredientId);
+
+  revalidatePath("/app/panostation/cafe");
   return {};
 }
