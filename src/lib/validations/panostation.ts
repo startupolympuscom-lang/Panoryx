@@ -68,6 +68,8 @@ export const recordDeliverySchema = z.object({
   stationId: z.string().uuid(),
   tankId: z.string().uuid(),
   supplierId: z.string().uuid().optional(),
+  driverId: z.string().uuid().optional(),
+  orderedQuantity: z.coerce.number().positive("Quantité commandée invalide.").optional(),
   liters: z.coerce.number().positive("Volume invalide."),
   unitCost: z.coerce.number().positive("Coût invalide.").optional(),
   deliveryNoteRef: z.string().trim().optional().or(z.literal("")),
@@ -216,4 +218,176 @@ export const recordCafeStockCountSchema = z.object({
   ingredientId: z.string().uuid(),
   stationId: z.string().uuid(),
   countedQuantity: z.coerce.number().min(0, "Quantité invalide."),
+});
+
+// --- Salaires et Bons employés (module 17) ---
+
+export const recordEmployeeAdvanceSchema = z.object({
+  employeeId: z.string().uuid(),
+  amount: z.coerce.number().positive("Montant invalide."),
+  note: z.string().trim().optional().or(z.literal("")),
+});
+
+export const recordEmployeeFuelVoucherSchema = z.object({
+  employeeId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  amount: z.coerce.number().positive("Montant invalide."),
+  productDescription: z.string().trim().min(1, "Description requise."),
+  beneficiaryName: z.string().trim().optional().or(z.literal("")),
+});
+
+export const markFuelVoucherReimbursedSchema = z.object({
+  voucherId: z.string().uuid(),
+});
+
+// --- La Jauge : certificats de cuves et facture manquante (module 18) ---
+
+export const recordTankGaugeCertificateSchema = z.object({
+  tankId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  measuredQuantity: z.coerce.number().min(0, "Quantité invalide."),
+});
+
+export const recordDeliveryShortfallSchema = z.object({
+  deliveryId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  missingQuantity: z.coerce.number().positive("Quantité manquante invalide."),
+  driverName: z.string().trim().min(2, "Nom du chauffeur requis."),
+  signatureNote: z.string().trim().optional().or(z.literal("")),
+});
+
+export const markDeliveryInvoiceReceivedSchema = z.object({
+  deliveryId: z.string().uuid(),
+  invoiceReference: z.string().trim().optional().or(z.literal("")),
+});
+
+// --- Gestion des livreurs (module 19) ---
+
+export const addDeliveryDriverSchema = z.object({
+  fullName: z.string().trim().min(2, "Nom requis."),
+  supplierId: z.string().uuid().optional(),
+  phone: z.string().trim().optional().or(z.literal("")),
+});
+
+// --- Gestion documentaire des factures (module 6) ---
+
+export const documentCategorySchema = z.enum([
+  "invoice",
+  "bon_signature",
+  "lubricant_photo",
+  "delivery_signature",
+  "other",
+]);
+
+// --- Bons Société et Vignettes (module 7) ---
+
+export const addVoucherCompanySchema = z.object({
+  stationId: z.string().uuid(),
+  name: z.string().trim().min(2, "Nom requis."),
+  phone: z.string().trim().optional().or(z.literal("")),
+});
+
+export const issueCompanyVoucherSchema = z.object({
+  companyId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  amount: z.coerce.number().positive("Montant invalide."),
+  productDescription: z.string().trim().min(1, "Description requise."),
+});
+
+export const markCompanyVoucherPaidSchema = z.object({
+  voucherId: z.string().uuid(),
+  paymentMethod: z.enum(["cash", "check", "transfer"]),
+});
+
+export const recordVignetteUsageSchema = z.object({
+  companyId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  vignetteType: z.enum(["fuel", "cafe_boutique"]),
+  amount: z.coerce.number().positive("Montant invalide."),
+  productDescription: z.string().trim().optional().or(z.literal("")),
+});
+
+// --- Chèques clients et société (modules 11 et 12) ---
+
+export const recordCustomerCheckSchema = z.object({
+  customerId: z.string().uuid(),
+  stationId: z.string().uuid(),
+  amount: z.coerce.number().positive("Montant invalide."),
+  checkNumber: z.string().trim().min(1, "Numéro de chèque requis."),
+  dueDate: z.string().trim().optional().or(z.literal("")),
+});
+
+export const markCustomerCheckStatusSchema = z.object({
+  checkId: z.string().uuid(),
+  status: z.enum(["cleared", "bounced"]),
+});
+
+export const recordCompanyCheckSchema = z.object({
+  stationId: z.string().uuid(),
+  beneficiary: z.string().trim().min(1, "Bénéficiaire requis."),
+  category: z.string().trim().min(1, "Catégorie requise."),
+  amount: z.coerce.number().positive("Montant invalide."),
+  checkNumber: z.string().trim().min(1, "Numéro de chèque requis."),
+  issuedDate: z.string().trim().optional().or(z.literal("")),
+});
+
+export const markCompanyCheckClearedSchema = z.object({
+  checkId: z.string().uuid(),
+});
+
+// --- Stock de lubrifiants avec photo (module 13) ---
+
+export const addLubricantProductSchema = z
+  .object({
+    stationId: z.string().uuid(),
+    name: z.string().trim().min(1, "Nom du produit requis."),
+    reference: z.string().trim().optional().or(z.literal("")),
+    costPrice: z.coerce.number().min(0, "Prix d'achat invalide."),
+    retailPrice: z.coerce.number().positive("Prix de vente invalide."),
+    stockQuantity: z.coerce.number().min(0, "Quantité invalide.").optional(),
+  })
+  .refine((d) => d.retailPrice > d.costPrice, {
+    message: "Le prix de vente doit être supérieur au prix d'achat.",
+    path: ["retailPrice"],
+  });
+
+// --- Droits d'accès aux pourcentages comptables (module 4) ---
+
+export const upsertAccountingSettingSchema = z.object({
+  settingKey: z.string().trim().min(1),
+  label: z.string().trim().min(1),
+  value: z.coerce.number(),
+});
+
+// --- Veille des prix mondiaux (module 5) ---
+
+export const setFuelPriceTrendSchema = z.object({
+  trend: z.enum(["rising", "falling", "stable"]),
+  note: z.string().trim().optional().or(z.literal("")),
+});
+
+// --- Planification réseaux sociaux (module 15) ---
+
+export const createSocialPostSchema = z.object({
+  stationId: z.string().uuid().optional().or(z.literal("")),
+  title: z.string().trim().min(1, "Titre requis."),
+  content: z.string().trim().min(1, "Contenu requis."),
+  platform: z.enum(["facebook", "instagram", "autre"]),
+  status: z.enum(["draft", "scheduled"]),
+  scheduledFor: z.string().trim().optional().or(z.literal("")),
+});
+
+export const markSocialPostPublishedSchema = z.object({
+  postId: z.string().uuid(),
+});
+
+// --- Messagerie interne (module 16) ---
+
+export const createMessageChannelSchema = z.object({
+  name: z.string().trim().min(1, "Nom du canal requis."),
+});
+
+export const sendChannelMessageSchema = z.object({
+  channelId: z.string().uuid(),
+  body: z.string().trim().min(1, "Message vide."),
 });

@@ -31,11 +31,13 @@ export default async function BoutiquePage() {
           .from("shop_products")
           .select("id, station_id, name, cost_price, retail_price, stock_quantity")
           .in("station_id", stationIds)
+          .eq("category", "boutique")
           .order("name"),
         supabase
           .from("shop_sales")
-          .select("id, station_id, quantity, unit_price, total_amount, total_profit, sold_at, shop_products!inner(name)")
+          .select("id, station_id, quantity, unit_price, total_amount, total_profit, sold_at, shop_products!inner(name, category)")
           .in("station_id", stationIds)
+          .eq("shop_products.category", "boutique")
           .order("sold_at", { ascending: false })
           .limit(20),
       ])
@@ -46,8 +48,9 @@ export default async function BoutiquePage() {
   const { data: monthSales } = stationIds.length
     ? await supabase
         .from("shop_sales")
-        .select("total_amount, total_profit")
+        .select("total_amount, total_profit, shop_products!inner(category)")
         .in("station_id", stationIds)
+        .eq("shop_products.category", "boutique")
         .gte("sold_at", thirtyDaysAgo.toISOString())
     : { data: [] };
 
