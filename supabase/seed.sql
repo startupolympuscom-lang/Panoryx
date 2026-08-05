@@ -1,24 +1,14 @@
 -- Panoryx development seed data.
 --
 -- Safe to run multiple times (idempotent via ON CONFLICT / existence
--- checks). Seeds the product catalog and a reference "Panoryx Demo"
+-- checks). The product catalog itself is seeded by migration
+-- 00009_product_catalog.sql (every deployment needs it, not just
+-- development), so this file only adds a reference "Panoryx Demo"
 -- organization with stations, tanks, pumps, nozzles and suppliers using
 -- Moroccan conventions (MAD, Gasoil/SP95/SP98, Casablanca/Rabat/Marrakech/
 -- Tanger). This organization is NOT linked to any auth user by default —
 -- see README.md for how to attach your own local account to it so you can
 -- exercise the PanoStation workflows against realistic data.
-
-insert into public.products (slug, name, description)
-values (
-  'panostation',
-  'PanoStation',
-  'Logiciel opérationnel pour réseaux de stations-service : ventes, stocks de carburant, équipes, fournisseurs et opérations quotidiennes.'
-)
-on conflict (slug) do nothing;
-
-insert into public.product_trial_config (product_id, trial_days)
-select id, 14 from public.products where slug = 'panostation'
-on conflict (product_id) do nothing;
 
 do $$
 declare

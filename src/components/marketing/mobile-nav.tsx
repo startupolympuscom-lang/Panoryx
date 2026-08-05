@@ -10,10 +10,10 @@ import { LogoLink } from "@/components/brand/logo";
 import { useHasMounted } from "@/lib/hooks/use-has-mounted";
 
 const links = [
-  { href: "/", label: "Accueil" },
   { href: "/produits", label: "Produits" },
+  { href: "/#solutions", label: "Solutions" },
   { href: "/#pourquoi-panoryx", label: "Pourquoi Panoryx" },
-  { href: "/a-propos", label: "À propos" },
+  { href: "/a-propos", label: "Ressources" },
   { href: "/contact", label: "Contact" },
 ];
 

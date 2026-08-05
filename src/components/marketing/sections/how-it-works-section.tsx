@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { OpenViewports } from "@/components/brand/graphic-devices";
@@ -51,7 +54,17 @@ export function HowItWorksSection() {
           </div>
 
           <FadeIn y={0} delay={0.1} className="relative flex items-center justify-center">
-            <OpenViewports className="h-64 w-64 animate-[spin_18s_linear_infinite] motion-reduce:animate-none sm:h-80 sm:w-80" />
+            <motion.div
+              className="pointer-events-none absolute h-72 w-72 rounded-full opacity-[0.35] blur-[90px] sm:h-[22rem] sm:w-[22rem]"
+              aria-hidden="true"
+              style={{
+                background:
+                  "radial-gradient(circle, var(--color-flow-violet), var(--color-panoryx-blue) 55%, transparent 75%)",
+              }}
+              animate={{ scale: [1, 1.1, 1], opacity: [0.28, 0.4, 0.28] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <OpenViewports className="relative h-64 w-64 animate-[spin_18s_linear_infinite] motion-reduce:animate-none sm:h-80 sm:w-80" />
             <div className="absolute flex flex-col items-center">
               <span className="text-xs font-bold uppercase tracking-widest text-navy-500">
                 Panoryx
