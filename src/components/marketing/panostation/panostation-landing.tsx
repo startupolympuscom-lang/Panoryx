@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Cairo } from "next/font/google";
 import {
   Fuel,
   Gauge,
@@ -27,13 +26,6 @@ import { usePanostationLocale } from "@/lib/i18n/use-panostation-locale";
 import { PanostationLanguageSwitcher } from "./language-switcher";
 import { cn } from "@/lib/utils";
 
-const cairo = Cairo({
-  variable: "--font-cairo",
-  subsets: ["arabic", "latin"],
-  weight: ["500", "600", "700", "800"],
-  display: "swap",
-});
-
 const moduleIcons = [Fuel, Gauge, Gauge, Truck, Wallet, Users, Truck, Wrench, AlertTriangle, BarChart3];
 
 export function PanostationLanding() {
@@ -48,7 +40,17 @@ export function PanostationLanding() {
   const ArrowIcon = isRtl ? ArrowLeft : ArrowRight;
 
   return (
-    <div dir={meta.dir} className={cn(isRtl && cairo.variable)}>
+    <div dir={meta.dir}>
+      {/* Loaded from Google's CSS endpoint at request time rather than via
+          next/font/google, so this page's build never depends on a
+          build-time fetch to Google Fonts. */}
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      {/* eslint-disable-next-line @next/next/no-page-custom-font -- intentionally scoped to this one page */}
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&display=swap"
+      />
       <section className="relative overflow-hidden bg-navy py-20 sm:py-28">
         <PanoramicArcs
           strokeWidth={5}
