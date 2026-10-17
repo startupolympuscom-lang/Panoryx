@@ -80,6 +80,23 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
+/* Darija (Arabic script) content, e.g. the PanoStation landing page,
+   switches to an Arabic-capable font via the --font-cairo variable it sets
+   on its `dir="rtl"` wrapper. These rules need to out-specify the plain
+   element selectors above, hence the [dir="rtl"] attribute selector. */
+[dir="rtl"] {
+  font-family: var(--font-cairo, inherit);
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  font-family: var(--font-cairo, inherit);
+}
+
 ::selection {
   background: var(--color-signal-cyan);
   color: var(--color-core-navy);
