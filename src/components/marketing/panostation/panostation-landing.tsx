@@ -14,6 +14,7 @@ import {
   ShieldCheck,
   ArrowRight,
   ArrowLeft,
+  FileX,
 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -27,6 +28,15 @@ import { PanostationLanguageSwitcher } from "./language-switcher";
 import { cn } from "@/lib/utils";
 
 const moduleIcons = [Fuel, Gauge, Gauge, Truck, Wallet, Users, Truck, Wrench, AlertTriangle, BarChart3];
+const benefitIcons = [FileX, Gauge, BarChart3];
+
+// Generated with Higgsfield to match Panoryx's palette (navy background,
+// blue/cyan/violet/coral/orange accents) and its flat, line-art
+// illustration style. Temporarily referenced from Higgsfield's CDN
+// pending this environment's network access to self-host it under
+// /public/brand — see the PR description for the follow-up.
+const HERO_ILLUSTRATION_SRC =
+  "https://d8j0ntlcm91z4.cloudfront.net/user_3Fm0FbcPWBLaZIJiitUIV3xPEp9/hf_20261023_021311_c0da8b54-1ea1-41fe-8603-16fffaa282cf.png";
 
 export function PanostationLanding() {
   // Reads/writes the visitor's language choice via useSyncExternalStore, so
@@ -63,46 +73,57 @@ export function PanostationLanding() {
           <div className="mb-8 flex justify-end">
             <PanostationLanguageSwitcher value={locale} onChange={handleChangeLocale} />
           </div>
-          <StaggerGroup once amount={0.6}>
-            <StaggerItem>
-              <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-signal-cyan">
-                {t.hero.eyebrow}
-              </p>
-            </StaggerItem>
-            <StaggerItem>
-              <Image
-                src="/brand/panostation/panostation-logo-dark.png"
-                alt="PanoStation"
-                width={1744}
-                height={887}
-                priority
-                className="h-10 w-auto sm:h-12"
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-8">
+            <StaggerGroup once amount={0.6}>
+              <StaggerItem>
+                <p className="mb-5 text-xs font-bold uppercase tracking-[0.16em] text-signal-cyan">
+                  {t.hero.eyebrow}
+                </p>
+              </StaggerItem>
+              <StaggerItem>
+                <Image
+                  src="/brand/panostation/panostation-logo-dark.png"
+                  alt="PanoStation"
+                  width={1744}
+                  height={887}
+                  priority
+                  className="h-10 w-auto sm:h-12"
+                />
+              </StaggerItem>
+              <StaggerItem>
+                <h1 className="mt-6 max-w-xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                  {t.hero.title}
+                </h1>
+              </StaggerItem>
+              <StaggerItem>
+                <p className="mt-6 max-w-xl text-lg leading-relaxed text-navy-200">{t.hero.subtitle}</p>
+              </StaggerItem>
+              <StaggerItem>
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+                  <Button href="/contact?type=demo" size="lg">
+                    {t.hero.ctaDemo}
+                  </Button>
+                  <Button
+                    href="/app/panostation"
+                    size="lg"
+                    variant="outline"
+                    className="border-white/20 bg-transparent text-white hover:border-signal-cyan hover:text-signal-cyan"
+                  >
+                    {t.hero.ctaAccess}
+                  </Button>
+                </div>
+              </StaggerItem>
+            </StaggerGroup>
+            <FadeIn delay={0.2} y={20} className="hidden lg:block">
+              {/* eslint-disable-next-line @next/next/no-img-element -- external, not yet an optimizable local asset */}
+              <img
+                src={HERO_ILLUSTRATION_SRC}
+                alt=""
+                aria-hidden="true"
+                className="w-full drop-shadow-[0_24px_60px_rgba(0,0,0,0.35)]"
               />
-            </StaggerItem>
-            <StaggerItem>
-              <h1 className="mt-6 max-w-3xl text-4xl font-bold tracking-tight text-white sm:text-5xl">
-                {t.hero.title}
-              </h1>
-            </StaggerItem>
-            <StaggerItem>
-              <p className="mt-6 max-w-2xl text-lg leading-relaxed text-navy-200">{t.hero.subtitle}</p>
-            </StaggerItem>
-            <StaggerItem>
-              <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-                <Button href="/contact?type=demo" size="lg">
-                  {t.hero.ctaDemo}
-                </Button>
-                <Button
-                  href="/app/panostation"
-                  size="lg"
-                  variant="outline"
-                  className="border-white/20 bg-transparent text-white hover:border-signal-cyan hover:text-signal-cyan"
-                >
-                  {t.hero.ctaAccess}
-                </Button>
-              </div>
-            </StaggerItem>
-          </StaggerGroup>
+            </FadeIn>
+          </div>
         </Container>
       </section>
 
@@ -112,15 +133,21 @@ export function PanostationLanding() {
             <SectionHeading eyebrow={t.benefits.eyebrow} title={t.benefits.title} />
           </FadeIn>
           <StaggerGroup className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {t.benefits.items.map((b) => (
-              <StaggerItem
-                key={b.title}
-                className="rounded-lg border border-navy-100 bg-white p-6 transition-shadow hover:shadow-card"
-              >
-                <h3 className="text-base font-semibold text-navy">{b.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-navy-500">{b.description}</p>
-              </StaggerItem>
-            ))}
+            {t.benefits.items.map((b, i) => {
+              const Icon = benefitIcons[i];
+              return (
+                <StaggerItem
+                  key={b.title}
+                  className="rounded-lg border border-navy-100 bg-white p-6 transition-shadow hover:shadow-card"
+                >
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-md bg-panoryx-blue/10 text-panoryx-blue">
+                    <Icon size={18} aria-hidden="true" />
+                  </div>
+                  <h3 className="text-base font-semibold text-navy">{b.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-navy-500">{b.description}</p>
+                </StaggerItem>
+              );
+            })}
           </StaggerGroup>
         </Container>
       </section>
