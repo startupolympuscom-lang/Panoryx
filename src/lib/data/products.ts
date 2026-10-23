@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { Fuel, Users2, Calculator, Package } from "lucide-react";
+import { Fuel, Users2, Calculator, Package, Pill } from "lucide-react";
 
 export interface ProductDefinition {
   slug: string;
@@ -73,6 +73,18 @@ export const products: ProductDefinition[] = [
     availability: "bientot-disponible",
     icon: Package,
     accentColor: "var(--color-signal-cyan)",
+  },
+  {
+    slug: "panopharma",
+    name: "PanoPharma",
+    tagline: "Pilotez chaque officine. Maîtrisez chaque ordonnance.",
+    description:
+      "Un futur produit Panoryx pour les réseaux de pharmacies : stocks de médicaments, ordonnances, caisse et conformité réglementaire.",
+    sector: "Réseaux de pharmacies",
+    modules: ["Stocks & péremption", "Ordonnances", "Caisse & rapports"],
+    availability: "bientot-disponible",
+    icon: Pill,
+    accentColor: "var(--color-pulse-orange)",
   },
 ];
 
