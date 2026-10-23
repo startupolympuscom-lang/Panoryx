@@ -20,7 +20,7 @@ export function FeaturedProductSection() {
           <div className="grid grid-cols-1 lg:grid-cols-2">
             <div className="p-8 sm:p-12 lg:p-14">
               <Badge tone="info" className="bg-white/10 text-signal-cyan">
-                Produit phare
+                Premier produit Panoryx
               </Badge>
               <h2 className="sr-only">PanoStation</h2>
               <Image
@@ -28,12 +28,13 @@ export function FeaturedProductSection() {
                 alt="PanoStation"
                 width={1744}
                 height={887}
-                className="mt-5 h-9 w-auto sm:h-11"
+                className="-ml-2 mt-4 h-14 w-auto sm:h-16"
               />
               <p className="mt-4 text-lg leading-relaxed text-navy-200">
                 Pilotez chaque station. Maîtrisez chaque opération. PanoStation centralise les
                 ventes, les stocks de carburant, les équipes, les fournisseurs et les opérations
-                quotidiennes de votre réseau de stations-service.
+                quotidiennes de votre réseau de stations-service — le premier métier que Panoryx
+                couvre, pas le seul.
               </p>
 
               <StaggerGroup className="mt-8 grid grid-cols-2 gap-4" amount={0.6}>

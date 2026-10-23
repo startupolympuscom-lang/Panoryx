@@ -1,10 +1,12 @@
 "use client";
 
-import { useRef, type CSSProperties } from "react";
+import { useRef } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { PanoryxMark } from "@/components/brand/logo";
+import { products } from "@/lib/data/products";
 import {
   ArrowRight,
   LayoutDashboard,
@@ -53,8 +55,7 @@ export function Hero() {
         <motion.div
           className="absolute -right-24 top-10 h-[420px] w-[420px] rounded-full opacity-[0.25] blur-[110px]"
           style={{
-            background:
-              "radial-gradient(circle, var(--color-panoryx-blue), transparent 70%)",
+            background: "radial-gradient(circle, var(--color-panoryx-blue), transparent 70%)",
           }}
           animate={{ scale: [1, 1.12, 1], opacity: [0.22, 0.3, 0.22] }}
           transition={{ duration: 9, repeat: Infinity, ease: "easeInOut" }}
@@ -62,263 +63,192 @@ export function Hero() {
         <motion.div
           className="absolute right-40 bottom-0 h-[360px] w-[360px] rounded-full opacity-[0.18] blur-[100px]"
           style={{
-            background:
-              "radial-gradient(circle, var(--color-flow-violet), transparent 70%)",
+            background: "radial-gradient(circle, var(--color-flow-violet), transparent 70%)",
           }}
           animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.24, 0.15] }}
           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut", delay: 1.5 }}
         />
       </div>
 
-      <Container className="relative pt-16 pb-16 sm:pt-20 sm:pb-24 lg:min-h-[600px] lg:pb-24 lg:pt-28">
-        <motion.div
-          className="max-w-2xl lg:max-w-sm"
-          variants={container}
-          initial="hidden"
-          animate="show"
-        >
-          <motion.p
-            variants={fadeUp}
-            className="mb-5 text-xs font-bold uppercase tracking-[0.18em] text-panoryx-blue"
-          >
-            Plateforme d&apos;opérations métier
-          </motion.p>
-          <motion.h1
-            variants={fadeUp}
-            className="text-5xl font-bold tracking-tight text-navy sm:text-6xl lg:text-[3.5rem] lg:leading-[1.05]"
-          >
-            {"Voyez tout.".split("").map((char, i) => (
-              <motion.span key={`l1-${i}`} variants={letterVariants} className="inline-block">
-                {char === " " ? " " : char}
+      <Container className="relative pt-14 pb-16 sm:pt-20 sm:pb-24 xl:pt-24 xl:pb-28">
+        <div className="grid grid-cols-1 items-center gap-14 xl:grid-cols-[29rem_minmax(0,1fr)] xl:gap-10">
+          <motion.div className="max-w-xl" variants={container} initial="hidden" animate="show">
+            <motion.p
+              variants={fadeUp}
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-panoryx-blue/15 bg-panoryx-blue/5 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-panoryx-blue"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-panoryx-blue" aria-hidden="true" />
+              Une famille de logiciels métier
+            </motion.p>
+            <motion.h1
+              variants={fadeUp}
+              className="text-5xl font-bold tracking-tight text-navy sm:text-6xl xl:text-[3.5rem] xl:leading-[1.04]"
+            >
+              {"Voyez tout.".split("").map((char, i) => (
+                <motion.span key={`l1-${i}`} variants={letterVariants} className="inline-block">
+                  {char === " " ? "\u00a0" : char}
+                </motion.span>
+              ))}
+              <br />
+              <motion.span
+                className="brand-gradient-text inline-block"
+                variants={{
+                  hidden: { opacity: 0, y: 14 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeOut, delay: 0.25 } },
+                }}
+              >
+                Pilotez mieux.
               </motion.span>
-            ))}
-            <br />
-            <motion.span
-              className="brand-gradient-text inline-block"
-              variants={{
-                hidden: { opacity: 0, y: 14 },
-                show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: easeOut, delay: 0.25 } },
-              }}
-            >
-              Pilotez mieux.
-            </motion.span>
-          </motion.h1>
-          <motion.p variants={fadeUp} className="mt-6 max-w-lg text-lg leading-relaxed text-navy-500">
-            Centralisez vos opérations, automatisez vos processus et prenez de meilleures
-            décisions en temps réel.
-          </motion.p>
-          <motion.div variants={fadeUp} className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-            <Button href="/contact?type=demo" size="lg">
-              Demander une démo
-            </Button>
-            <Button
-              href="/produits/panostation"
-              size="lg"
-              variant="ghost"
-              className="group gap-2 px-2 text-panoryx-blue hover:bg-transparent hover:text-[#1e4cf0]"
-            >
-              Découvrir PanoStation
-              <ArrowRight
-                size={17}
-                className="transition-transform duration-200 group-hover:translate-x-1"
-                aria-hidden="true"
-              />
-            </Button>
+            </motion.h1>
+            <motion.p variants={fadeUp} className="mt-6 text-lg leading-relaxed text-navy-500">
+              Panoryx est le système d&apos;exploitation de votre entreprise&nbsp;: un logiciel
+              taillé pour chaque métier, tous reliés à la même organisation et à la même vue
+              d&apos;ensemble.
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3">
+              <Button href="/contact?type=demo" size="lg" className="shrink-0">
+                Demander une démo
+              </Button>
+              <Button
+                href="/produits"
+                size="lg"
+                variant="ghost"
+                className="group shrink-0 gap-2 px-1 text-panoryx-blue hover:bg-transparent hover:text-[#1e4cf0]"
+              >
+                Découvrir nos produits
+                <ArrowRight
+                  size={17}
+                  className="transition-transform duration-200 group-hover:translate-x-1"
+                  aria-hidden="true"
+                />
+              </Button>
+            </motion.div>
+            <motion.div variants={fadeUp} className="mt-10 border-t border-navy-100 pt-6">
+              <ProductStrip />
+            </motion.div>
           </motion.div>
-        </motion.div>
 
-        <motion.div
-          className="relative mt-16 lg:hidden"
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.45, ease: easeOut }}
-        >
-          <MobileDashboard />
-        </motion.div>
+          <motion.div
+            className="xl:hidden"
+            initial={{ opacity: 0, y: 30, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.45, ease: easeOut }}
+          >
+            <MobileDashboard />
+          </motion.div>
 
-        <motion.div
-          className="hidden lg:absolute lg:right-0 lg:top-1/2 lg:block lg:w-[64%] lg:-translate-y-1/2"
-          initial={{ opacity: 0, x: 30, scale: 0.98 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.45, ease: easeOut }}
-        >
-          <DesktopOperationsVisual />
-        </motion.div>
+          <motion.div
+            className="hidden xl:block"
+            initial={{ opacity: 0, x: 30, scale: 0.98 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.45, ease: easeOut }}
+          >
+            <DesktopOperationsVisual />
+          </motion.div>
+        </div>
       </Container>
     </section>
   );
 }
 
-const leftBadges: { label: string; icon: LucideIcon; color: string; top: number }[] = [
-  { label: "Ventes", icon: TrendingUp, color: "var(--color-panoryx-blue)", top: 150 },
-  { label: "Stocks", icon: Box, color: "var(--color-signal-cyan)", top: 340 },
-];
+/**
+ * Makes the "family of products, not one tool" claim concrete in the fold:
+ * PanoStation shown live, the rest of the roadmap right next to it.
+ */
+function ProductStrip() {
+  const live = products.filter((p) => p.availability === "disponible");
+  const upcoming = products.filter((p) => p.availability !== "disponible");
 
-const rightBadges: { label: string; icon: LucideIcon; color: string; top: number }[] = [
-  { label: "Finance", icon: DollarSign, color: "var(--color-pulse-orange)", top: 60 },
-  { label: "Équipes", icon: Users, color: "var(--color-flow-violet)", top: 225 },
-  { label: "Operations", icon: Settings, color: "var(--color-panoryx-blue)", top: 385 },
-];
-
-const leftPaths = [
-  "M 175 185 C 200 185, 205 180, 225 180",
-  "M 175 365 C 200 365, 205 320, 225 320",
-];
-
-const rightPaths = [
-  "M 775 150 C 805 150, 795 100, 825 100",
-  "M 775 260 C 805 260, 810 260, 825 260",
-  "M 775 320 C 805 320, 795 415, 825 415",
-];
-
-const pathDraw = {
-  hidden: { pathLength: 0, opacity: 0 },
-  show: (i: number) => ({
-    pathLength: 1,
-    opacity: 0.6,
-    transition: { duration: 1.4, delay: 0.9 + i * 0.12, ease: easeOut },
-  }),
-};
-
-const badgeShow = {
-  hidden: { opacity: 0, scale: 0.85 },
-  show: { opacity: 1, scale: 1, transition: { duration: 0.5, ease: easeOut } },
-};
-
-function FloatingBadge({
-  icon: Icon,
-  label,
-  color,
-  className,
-  style,
-  delay,
-  floatDuration,
-}: {
-  icon: LucideIcon;
-  label: string;
-  color: string;
-  className?: string;
-  style?: CSSProperties;
-  delay: number;
-  floatDuration: number;
-}) {
   return (
-    <motion.div
-      className={className}
-      style={style}
-      variants={badgeShow}
-      initial="hidden"
-      animate="show"
-      transition={{ delay }}
-    >
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ duration: floatDuration, repeat: Infinity, ease: "easeInOut", delay: delay + 0.5 }}
-        whileHover={{ y: -4, scale: 1.04 }}
-        className="flex w-[168px] items-center gap-2.5 rounded-full border border-navy-100 bg-white px-4 py-2.5 shadow-card transition-shadow hover:shadow-lg"
-      >
-        <span
-          className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
-          style={{ backgroundColor: `color-mix(in srgb, ${color} 14%, white)` }}
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-3 text-sm">
+      {live.map((p) => (
+        <Link
+          key={p.slug}
+          href={`/produits/${p.slug}`}
+          className="inline-flex items-center gap-2 rounded-full border border-panoryx-blue/20 bg-white px-3 py-1.5 font-semibold text-navy shadow-soft transition-colors hover:border-panoryx-blue/40"
         >
-          <Icon size={15} color={color} strokeWidth={2.25} aria-hidden="true" />
-        </span>
-        <span className="text-sm font-semibold text-navy">{label}</span>
-      </motion.div>
-    </motion.div>
+          <span className="relative flex h-2 w-2" aria-hidden="true">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+          </span>
+          {p.shortName}
+          <span className="text-xs font-medium text-emerald-600">Disponible</span>
+        </Link>
+      ))}
+      <Link href="/produits" className="group inline-flex flex-wrap items-center gap-x-2 text-navy-400">
+        <span className="text-xs font-bold uppercase tracking-[0.12em]">Bientôt</span>
+        {upcoming.map((p, i) => (
+          <span key={p.slug} className="font-medium text-navy-500 transition-colors group-hover:text-navy-700">
+            {p.shortName}
+            {i < upcoming.length - 1 ? <span className="ml-2 text-navy-200">·</span> : null}
+          </span>
+        ))}
+      </Link>
+    </div>
   );
 }
 
+const feederBadges: { label: string; icon: LucideIcon; color: string }[] = [
+  { label: "Ventes", icon: TrendingUp, color: "var(--color-panoryx-blue)" },
+  { label: "Stocks", icon: Box, color: "var(--color-signal-cyan)" },
+  { label: "Finance", icon: DollarSign, color: "var(--color-pulse-orange)" },
+  { label: "Équipes", icon: Users, color: "var(--color-flow-violet)" },
+  { label: "Opérations", icon: Settings, color: "var(--color-action-coral)" },
+];
+
 function MobileDashboard() {
   return (
-    <div className="mx-auto max-w-lg">
+    <div className="mx-auto max-w-2xl">
       <DashboardMockup />
     </div>
   );
 }
 
 /**
- * Dashboard mockup + connected module badges, echoing the operational
- * "vue panoramique" concept: one screen, everything feeding into it.
+ * Every domain feeds one screen: a column of module badges on the left,
+ * each wired into the dashboard by an animated connector. Badges live in
+ * their own gutter so they never cover the dashboard's figures.
  */
 function DesktopOperationsVisual() {
-  const allPaths = [...leftPaths, ...rightPaths];
-
   return (
-    <div className="relative h-[500px] w-full">
-      <svg
-        className="absolute inset-0 h-full w-full"
-        viewBox="0 0 1000 500"
-        preserveAspectRatio="none"
-        fill="none"
-        aria-hidden="true"
-      >
-        {allPaths.map((d, i) => {
-          const color =
-            i < leftPaths.length
-              ? leftBadges[i]?.color
-              : rightBadges[i - leftPaths.length]?.color;
-          return (
-            <g key={d}>
-              <motion.path
-                d={d}
-                stroke={color}
-                strokeWidth="2"
-                custom={i}
-                variants={pathDraw}
-                initial="hidden"
-                animate="show"
-              />
-              <motion.path
-                d={d}
-                stroke={color}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeDasharray="1 22"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 0.9, strokeDashoffset: [0, -46] }}
-                transition={{
-                  opacity: { duration: 0.6, delay: 1.6 + i * 0.12 },
-                  strokeDashoffset: {
-                    duration: 1.8,
-                    repeat: Infinity,
-                    ease: "linear",
-                    delay: 1.6 + i * 0.12,
-                  },
+    <div className="relative flex items-center">
+      <ul className="relative z-10 flex w-[136px] shrink-0 flex-col gap-5">
+        {feederBadges.map((b, i) => (
+          <motion.li
+            key={b.label}
+            className="relative flex items-center"
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.9 + i * 0.1, ease: easeOut }}
+          >
+            <motion.div
+              animate={{ y: [0, -3, 0] }}
+              transition={{ duration: 3.4 + i * 0.35, repeat: Infinity, ease: "easeInOut", delay: 1.4 + i * 0.1 }}
+              className="flex w-[136px] items-center gap-2 rounded-full border border-navy-100 bg-white py-2 pl-2 pr-3 shadow-card"
+            >
+              <span
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+                style={{ backgroundColor: `color-mix(in srgb, ${b.color} 14%, white)` }}
+              >
+                <b.icon size={14} color={b.color} strokeWidth={2.25} aria-hidden="true" />
+              </span>
+              <span className="text-[13px] font-semibold text-navy">{b.label}</span>
+            </motion.div>
+            <span className="pointer-events-none absolute left-full top-1/2 h-[2px] w-9 -translate-y-1/2 overflow-hidden" aria-hidden="true">
+              <motion.span
+                className="block h-full w-[200%]"
+                style={{
+                  backgroundImage: `repeating-linear-gradient(90deg, ${b.color} 0 6px, transparent 6px 12px)`,
+                  opacity: 0.7,
                 }}
+                animate={{ x: ["-50%", "0%"] }}
+                transition={{ duration: 1.2, repeat: Infinity, ease: "linear" }}
               />
-            </g>
-          );
-        })}
-      </svg>
-
-      {leftBadges.map((b, i) => (
-        <FloatingBadge
-          key={b.label}
-          icon={b.icon}
-          label={b.label}
-          color={b.color}
-          className="absolute left-0 z-10"
-          style={{ top: b.top }}
-          delay={1 + i * 0.12}
-          floatDuration={3.4 + i * 0.4}
-        />
-      ))}
-
-      {rightBadges.map((b, i) => (
-        <FloatingBadge
-          key={b.label}
-          icon={b.icon}
-          label={b.label}
-          color={b.color}
-          className="absolute right-0 z-10"
-          style={{ top: b.top }}
-          delay={1.15 + i * 0.12}
-          floatDuration={3.8 + i * 0.4}
-        />
-      ))}
-
-      <TiltCard className="absolute left-1/2 top-1/2 w-[74%] -translate-x-1/2 -translate-y-1/2">
+            </span>
+          </motion.li>
+        ))}
+      </ul>
+      <TiltCard className="relative ml-9 min-w-0 flex-1">
         <DashboardMockup />
       </TiltCard>
     </div>
@@ -379,7 +309,7 @@ const railIcons: { icon: LucideIcon; active?: boolean }[] = [
 const kpiTilesRow1 = [
   { label: "Ventes", value: "+12,4 %", hint: "vs mois dernier", color: "var(--color-panoryx-blue)" },
   { label: "Stocks", value: "90 % sain", hint: "Taux de disponibilité", color: "var(--color-signal-cyan)" },
-  { label: "Alertes", value: "3 prioritaires", hint: "À traiter", color: "var(--color-action-coral)" },
+  { label: "Alertes", value: "3", hint: "Prioritaires", color: "var(--color-action-coral)" },
 ];
 
 const kpiTilesRow2 = [
