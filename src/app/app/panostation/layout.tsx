@@ -3,12 +3,15 @@ import { Suspense } from "react";
 import Image from "next/image";
 import { getCurrentOrg, hasProductAccess } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { isDemoMode } from "@/lib/demo/demo-mode";
 import { AccessRequest } from "@/components/app/access-request";
 import { PanoStationSidebar } from "@/components/app/panostation/sidebar";
 import { PanoStationMobileNav } from "@/components/app/panostation/mobile-sidebar";
 import { StationSwitcher } from "@/components/app/panostation/station-switcher";
+import { DemoModeBanner } from "@/components/app/panostation/demo-mode-banner";
 
 export default async function PanoStationLayout({ children }: { children: React.ReactNode }) {
+  const demo = await isDemoMode();
   const org = await getCurrentOrg();
   if (!org) redirect("/app/onboarding");
 
@@ -55,6 +58,7 @@ export default async function PanoStationLayout({ children }: { children: React.
           </Suspense>
         </div>
 
+        {demo ? <DemoModeBanner /> : null}
         <div className="flex-1 p-4 sm:p-6 lg:p-8">{children}</div>
       </div>
     </div>

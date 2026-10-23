@@ -1,10 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { DEMO_COOKIE_NAME } from "@/lib/demo/constants";
 
 const PROTECTED_PREFIXES = ["/app"];
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
+
+  // Demo mode never touches the real Supabase connection — skip it
+  // entirely and treat the visitor as authenticated for protected routes.
+  if (request.cookies.get(DEMO_COOKIE_NAME)?.value === "1") {
+    return supabaseResponse;
+  }
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

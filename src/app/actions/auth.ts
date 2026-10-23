@@ -1,7 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { DEMO_COOKIE_NAME } from "@/lib/demo/constants";
 import { translateAuthError } from "@/lib/auth/error-messages";
 import {
   loginSchema,
@@ -104,6 +106,8 @@ export async function signUp(
 export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
+  const cookieStore = await cookies();
+  cookieStore.delete(DEMO_COOKIE_NAME);
   redirect("/");
 }
 
