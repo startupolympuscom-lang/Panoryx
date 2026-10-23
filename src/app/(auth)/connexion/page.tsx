@@ -3,6 +3,7 @@ import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { AuthCard } from "@/components/marketing/auth-card";
 import { LoginForm } from "@/components/marketing/auth/login-form";
+import { DemoAccess } from "@/components/marketing/auth/demo-access";
 
 export const metadata: Metadata = {
   title: "Connexion",
@@ -37,6 +38,7 @@ export default async function ConnexionPage({
         </div>
       ) : null}
       <LoginForm next={next ?? "/app"} />
+      <DemoAccess next={next ?? "/app/panostation"} />
     </AuthCard>
   );
 }

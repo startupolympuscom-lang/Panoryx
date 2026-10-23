@@ -20,7 +20,6 @@ export const loginSchema = z.object({
 export const signupSchema = z
   .object({
     fullName: z.string().trim().min(2, "Veuillez indiquer votre nom complet."),
-    companyName: z.string().trim().min(2, "Veuillez indiquer le nom de votre entreprise."),
     email: emailField,
     password: passwordField,
     confirmPassword: z.string(),

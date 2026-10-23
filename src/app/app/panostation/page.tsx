@@ -73,8 +73,8 @@ export default async function PanoStationOverviewPage({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <KpiCard label="Quarts ouverts" value={String(data.openShiftsCount)} icon={Clock} tone="warning" />
         <KpiCard
-          label="Livraisons en attente"
-          value={String(data.pendingDeliveriesCount)}
+          label="Livraisons (7 jours)"
+          value={String(data.deliveriesThisWeekCount)}
           icon={Truck}
         />
         <KpiCard

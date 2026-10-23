@@ -20,10 +20,6 @@ export function SignupForm({ next }: { next: string }) {
         <Input id="fullName" name="fullName" autoComplete="name" required />
       </Field>
 
-      <Field label="Nom de l'entreprise" htmlFor="companyName" error={state.fieldErrors?.companyName}>
-        <Input id="companyName" name="companyName" autoComplete="organization" required />
-      </Field>
-
       <Field label="Adresse e-mail" htmlFor="email" error={state.fieldErrors?.email}>
         <Input id="email" name="email" type="email" autoComplete="email" required />
       </Field>

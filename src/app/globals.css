@@ -80,6 +80,23 @@ h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
 }
 
+/* Darija (Arabic script) content, e.g. the PanoStation landing page, loads
+   the Cairo font from Google's CSS endpoint (see panostation-landing.tsx)
+   and switches to it here. These rules need to out-specify the plain
+   element selectors above, hence the [dir="rtl"] attribute selector. */
+[dir="rtl"] {
+  font-family: "Cairo", var(--font-sans);
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  font-family: "Cairo", var(--font-heading);
+}
+
 ::selection {
   background: var(--color-signal-cyan);
   color: var(--color-core-navy);

@@ -1,9 +1,11 @@
 import type { LucideIcon } from "lucide-react";
-import { Fuel, Users2, Calculator, Package } from "lucide-react";
+import { Fuel, Users2, Calculator, Package, Pill } from "lucide-react";
 
 export interface ProductDefinition {
   slug: string;
   name: string;
+  /** Compact label for tight spaces like the homepage hero strip. */
+  shortName: string;
   tagline: string;
   description: string;
   sector: string;
@@ -21,6 +23,7 @@ export interface ProductDefinition {
 export const products: ProductDefinition[] = [
   {
     slug: "panostation",
+    shortName: "PanoStation",
     name: "PanoStation",
     tagline: "Pilotez chaque station. Maîtrisez chaque opération.",
     description:
@@ -40,6 +43,7 @@ export const products: ProductDefinition[] = [
   },
   {
     slug: "ressources-humaines",
+    shortName: "RH",
     name: "Module Ressources humaines",
     tagline: "Gestion des équipes et de la présence, à l'échelle de l'organisation.",
     description:
@@ -52,6 +56,7 @@ export const products: ProductDefinition[] = [
   },
   {
     slug: "comptabilite",
+    shortName: "Finance",
     name: "Module Comptabilité & finance",
     tagline: "Suivi financier connecté aux opérations.",
     description:
@@ -64,6 +69,7 @@ export const products: ProductDefinition[] = [
   },
   {
     slug: "logistique",
+    shortName: "Logistique",
     name: "Module Logistique & inventaire",
     tagline: "Stocks et flux de marchandises unifiés.",
     description:
@@ -73,6 +79,19 @@ export const products: ProductDefinition[] = [
     availability: "bientot-disponible",
     icon: Package,
     accentColor: "var(--color-signal-cyan)",
+  },
+  {
+    slug: "panopharma",
+    shortName: "PanoPharma",
+    name: "PanoPharma",
+    tagline: "Pilotez chaque officine. Maîtrisez chaque ordonnance.",
+    description:
+      "Un futur produit Panoryx pour les réseaux de pharmacies : stocks de médicaments, ordonnances, caisse et conformité réglementaire.",
+    sector: "Réseaux de pharmacies",
+    modules: ["Stocks & péremption", "Ordonnances", "Caisse & rapports"],
+    availability: "bientot-disponible",
+    icon: Pill,
+    accentColor: "var(--color-pulse-orange)",
   },
 ];
 

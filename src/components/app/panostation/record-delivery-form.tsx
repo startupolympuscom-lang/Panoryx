@@ -22,6 +22,11 @@ interface SupplierOption {
   name: string;
 }
 
+interface DriverOption {
+  id: string;
+  fullName: string;
+}
+
 type FormInput = z.input<typeof recordDeliverySchema>;
 type FormOutput = z.output<typeof recordDeliverySchema>;
 
@@ -30,11 +35,13 @@ export function RecordDeliveryForm({
   stations,
   tanks,
   suppliers,
+  drivers = [],
 }: {
   userId: string;
   stations: DashboardStation[];
   tanks: TankOption[];
   suppliers: SupplierOption[];
+  drivers?: DriverOption[];
 }) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -52,6 +59,8 @@ export function RecordDeliveryForm({
       stationId,
       tankId: stationTanks[0]?.id ?? "",
       supplierId: suppliers[0]?.id,
+      driverId: undefined,
+      orderedQuantity: undefined,
       liters: 0,
       unitCost: undefined,
       deliveryNoteRef: "",
@@ -111,9 +120,35 @@ export function RecordDeliveryForm({
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Field
+          label="Chauffeur / livreur"
+          htmlFor="driverId"
+          error={errors.driverId?.message}
+          hint="Facultatif"
+        >
+          <Select id="driverId" {...register("driverId")}>
+            <option value="">—</option>
+            {drivers.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.fullName}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field
+          label="Quantité commandée (L)"
+          htmlFor="orderedQuantity"
+          error={errors.orderedQuantity?.message}
+          hint="Facultatif — pour comparer à ce qui est livré"
+        >
+          <Input id="orderedQuantity" type="number" step="0.01" {...register("orderedQuantity")} />
+        </Field>
         <Field label="Volume livré (L)" htmlFor="deliveryLiters" error={errors.liters?.message}>
           <Input id="deliveryLiters" type="number" step="0.01" {...register("liters")} />
         </Field>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field
           label="Coût unitaire (MAD/L)"
           htmlFor="unitCost"

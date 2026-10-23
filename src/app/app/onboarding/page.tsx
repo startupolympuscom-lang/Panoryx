@@ -18,9 +18,6 @@ export default async function OnboardingPage({
   const org = await getCurrentOrg();
   if (org) redirect(next ?? "/app");
 
-  const defaultName =
-    (user.user_metadata?.company_name as string | undefined) ?? undefined;
-
   return (
     <main className="flex flex-1 items-center justify-center px-5 py-16">
       <div className="w-full max-w-md rounded-xl border border-navy-100 bg-white p-8 shadow-card">
@@ -36,7 +33,7 @@ export default async function OnboardingPage({
           démarre avec un essai PanoStation activé automatiquement.
         </p>
         <div className="mt-7">
-          <OnboardingForm defaultName={defaultName} next={next ?? "/app"} />
+          <OnboardingForm next={next ?? "/app"} />
         </div>
       </div>
     </main>

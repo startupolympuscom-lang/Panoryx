@@ -11,7 +11,8 @@ import { Field, Input, Select } from "@/components/ui/form-fields";
 import { Button } from "@/components/ui/button";
 import type { DashboardStation } from "@/lib/data/panostation-dashboard";
 
-type FormValues = z.infer<typeof addEmployeeSchema>;
+type FormInput = z.input<typeof addEmployeeSchema>;
+type FormOutput = z.output<typeof addEmployeeSchema>;
 
 export function AddEmployeeForm({
   organizationId,
@@ -22,21 +23,25 @@ export function AddEmployeeForm({
 }) {
   const router = useRouter();
   const [serverError, setServerError] = useState<string | null>(null);
+  const today = new Date().toISOString().slice(0, 10);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<FormValues>({ resolver: zodResolver(addEmployeeSchema) });
+  } = useForm<FormInput, unknown, FormOutput>({
+    resolver: zodResolver(addEmployeeSchema),
+    defaultValues: { hiredAt: today },
+  });
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: FormOutput) {
     setServerError(null);
     const result = await addEmployee(organizationId, values);
     if (result.error) {
       setServerError(result.error);
       return;
     }
-    reset();
+    reset({ hiredAt: today });
     router.refresh();
   }
 
@@ -60,9 +65,27 @@ export function AddEmployeeForm({
           </Select>
         </Field>
       </div>
-      <Field label="Téléphone" htmlFor="employeePhone" error={errors.phone?.message} hint="Facultatif">
-        <Input id="employeePhone" type="tel" {...register("phone")} />
-      </Field>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <Field label="Téléphone" htmlFor="employeePhone" error={errors.phone?.message} hint="Facultatif">
+          <Input id="employeePhone" type="tel" {...register("phone")} />
+        </Field>
+        <Field
+          label="Salaire mensuel (MAD)"
+          htmlFor="employeeSalary"
+          error={errors.salary?.message}
+          hint="Facultatif"
+        >
+          <Input id="employeeSalary" type="number" step="0.01" min="0" {...register("salary")} />
+        </Field>
+        <Field
+          label="Date d'embauche"
+          htmlFor="employeeHiredAt"
+          error={errors.hiredAt?.message}
+          hint="Facultatif"
+        >
+          <Input id="employeeHiredAt" type="date" {...register("hiredAt")} />
+        </Field>
+      </div>
 
       {serverError ? <p className="text-sm font-medium text-action-coral">{serverError}</p> : null}
 
